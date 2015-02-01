@@ -1,11 +1,9 @@
-#sbs-git:slp/api/application capi-appfw-application 0.1.0 56d9b8e057f022f0e7fdb1853587158452e7ae1b
 Name:       capi-appfw-application
 Summary:    An Application library in SLP C API
-Version:    0.1.6
+Version:    0.3.1.0
 Release:    1
-VCS:        magnolia/framework/api/application#capi-appfw-application_0.1.0-53-20-g4359a4ce7206e0e16621da84f22312c45b6489ce
-Group:      TO_BE/FILLED_IN
-License:    TO BE FILLED IN
+Group:		Application Framework/Libraries
+License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
@@ -15,15 +13,18 @@ BuildRequires:  pkgconfig(appcore-efl)
 BuildRequires:  pkgconfig(aul)
 BuildRequires:  pkgconfig(ail)
 BuildRequires:  pkgconfig(appsvc)
-BuildRequires:  pkgconfig(notification)
 BuildRequires:  pkgconfig(elementary)
 BuildRequires:  pkgconfig(alarm-service)
 BuildRequires:  pkgconfig(capi-base-common)
 BuildRequires:  pkgconfig(sqlite3)
+BuildRequires:  pkgconfig(capi-security-privilege-manager)
+BuildRequires:  pkgconfig(pkgmgr-info)
+BuildRequires:  pkgconfig(vconf-internal-keys)
 
-
-Requires(post): /sbin/ldconfig  
+Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
+
+%define feature_appfw_process_pool 1
 
 %description
 An Application library in SLP C API
@@ -40,9 +41,13 @@ An Application library in SLP C API (DEV)
 %setup -q
 
 %build
-MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
-cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFULLVER=%{version} -DMAJORVER=${MAJORVER}
+%if 0%{?feature_appfw_process_pool}
+ _APPFW_FEATURE_PROCESS_POOL=ON
+%endif
 
+MAJORVER=`echo %{version} | awk 'BEGIN {FS="."}{print $1}'`
+cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFULLVER=%{version} -DMAJORVER=${MAJORVER} \
+	-D_APPFW_FEATURE_PROCESS_POOL:BOOL=${_APPFW_FEATURE_PROCESS_POOL}
 
 make %{?jobs:-j%jobs}
 
@@ -59,6 +64,10 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 
 %files
 %{_libdir}/libcapi-appfw-application.so.*
+%{_libdir}/libcapi-appfw-app-control.so.*
+%{_libdir}/libcapi-appfw-app-common.so.*
+%{_libdir}/libcapi-appfw-alarm.so.*
+%{_libdir}/libcapi-appfw-preference.so.*
 %manifest capi-appfw-application.manifest
 /usr/share/license/%{name}
 
@@ -66,6 +75,8 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 %{_includedir}/appfw/*.h
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libcapi-appfw-application.so
-
-
+%{_libdir}/libcapi-appfw-app-control.so
+%{_libdir}/libcapi-appfw-app-common.so
+%{_libdir}/libcapi-appfw-alarm.so
+%{_libdir}/libcapi-appfw-preference.so
 

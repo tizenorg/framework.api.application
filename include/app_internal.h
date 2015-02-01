@@ -11,25 +11,19 @@
  * distributed under the License is distributed on an AS IS BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 
-#ifndef __TIZEN_APPFW_APP_PRIVATE_H__
-#define __TIZEN_APPFW_APP_PRIVATE_H__
-
-#include <appcore-common.h>
-
-// GNU gettext macro is already defined at appcore-common.h
-#ifdef _ 
-#undef _
-#endif
-
-#include <app.h>
+#ifndef __TIZEN_APPFW_APP_INTERNAL_H__
+#define __TIZEN_APPFW_APP_INTERNAL_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <app.h>
+#include <appcore-common.h>
 
 #define TIZEN_PATH_MAX 1024
 
@@ -41,6 +35,19 @@ extern "C" {
 #define PATH_FMT_RO_APP_ROOT "/usr/apps"
 #define PATH_FMT_RO_RES_DIR PATH_FMT_RO_APP_ROOT "/%s/res"
 #define PATH_FMT_RO_LOCALE_DIR PATH_FMT_RO_RES_DIR "/locale"
+
+struct app_event_handler {
+	app_event_type_e type;
+	app_event_cb cb;
+	void *data;
+};
+
+struct app_event_info {
+	app_event_type_e type;
+	void *value;
+};
+
+app_device_orientation_e app_convert_appcore_rm(enum appcore_rm rm);
 
 typedef void (*app_finalizer_cb) (void *data);
 
@@ -56,8 +63,10 @@ int app_finalizer_remove(app_finalizer_cb callback);
 
 void app_finalizer_execute(void);
 
+int app_get_package(char **package);
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TIZEN_APPFW_APP_PRIVATE_H__ */
+#endif /* __TIZEN_APPFW_APP_INTERNAL_H__ */

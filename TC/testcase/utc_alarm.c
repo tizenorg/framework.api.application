@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an AS IS BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 
@@ -48,8 +48,8 @@ static void utc_alarm_get_scheduled_recurrence_week_flag_positive(void);
 static void utc_alarm_get_scheduled_recurrence_week_flag_negative(void);
 static void utc_alarm_get_current_time_positive(void);
 static void utc_alarm_get_current_time_negative(void);
-static void utc_alarm_get_service_positive(void);
-static void utc_alarm_get_service_negative(void);
+static void utc_alarm_get_app_control_positive(void);
+static void utc_alarm_get_app_control_negative(void);
 
 
 
@@ -73,8 +73,8 @@ struct tet_testlist tet_testlist[] = {
 	{ utc_alarm_get_scheduled_recurrence_week_flag_negative, 2 },
 	{ utc_alarm_get_current_time_positive, 1 },
 	{ utc_alarm_get_current_time_negative, 2 },
-	{ utc_alarm_get_service_positive, 1 },
-	{ utc_alarm_get_service_negative, 2 },
+	{ utc_alarm_get_app_control_positive, 1 },
+	{ utc_alarm_get_app_control_negative, 2 },
 	{ NULL, 0 },
 };
 
@@ -98,7 +98,7 @@ static bool foreach_alarm_cb(int alarm, void* user_data)
 	}
 
 	dts_message("utc_alarm_foreach_registered_alarm_positive", "registered id = %d callback id = %d", alarm, tid);
-	
+
 	return true;
 }
 
@@ -116,22 +116,22 @@ static void utc_alarm_schedule_after_delay_positive(void)
 {
 	time_t current_time;
 	struct tm current_tm;
-	service_h service;
+	app_control_h app_control;
 	int tid;
 	GMainLoop *loop;
 	int ret = ALARM_ERROR_NONE;
 
-	service_create(&service); 
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
-	service_set_package(service, "com.samsung.memo");
-	
+	app_control_create(&app_control);
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+	app_control_set_package(app_control, "org.tizen.memo");
+
 	loop = g_main_loop_new(NULL, FALSE);
-	g_timeout_add(5000,timeout , loop); 
-	
-	ret = alarm_schedule_after_delay(service, 1, 1, &tid);
-	
+	g_timeout_add(5000,timeout , loop);
+
+	ret = alarm_schedule_after_delay(app_control, 1, 1, &tid);
+
 	g_main_loop_run(loop);
-		
+
 	if(ret == ALARM_ERROR_NONE)
 	{
 		dts_pass("utc_alarm_schedule_after_delay_positive", "passed");
@@ -140,8 +140,8 @@ static void utc_alarm_schedule_after_delay_positive(void)
 	{
 		dts_fail("utc_alarm_schedule_after_delay_positive", "failed");
 	}
-	
-	service_destory(service);
+
+	app_control_destory(app_control);
 	alarm_cancel_all();
 }
 
@@ -152,16 +152,16 @@ static void utc_alarm_schedule_after_delay_negative(void)
 {
 	time_t current_time;
 	struct tm current_tm;
-	service_h service;
+	app_control_h app_control;
 	int ret = ALARM_ERROR_NONE;
 	int tid;
 	GMainLoop *loop;
 
-	service_create(&service); 
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
-                                                            
-	ret = alarm_schedule_after_delay(service, 1, 1, NULL);
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+
+	ret = alarm_schedule_after_delay(app_control, 1, 1, NULL);
 
 	g_main_loop_run(loop);
 
@@ -173,8 +173,8 @@ static void utc_alarm_schedule_after_delay_negative(void)
 	{
 		dts_pass("utc_alarm_schedule_after_delay_negative", "passed");
 	}
-	
-	service_destory(service);
+
+	app_control_destory(app_control);
 	alarm_cancel_all();
 
 }
@@ -187,23 +187,23 @@ static void utc_alarm_cancel_positive(void)
 {
 	time_t current_time;
 	struct tm current_tm;
-	service_h service;
+	app_control_h app_control;
 	int ret = ALARM_ERROR_NONE;
 	int tid;
 	GMainLoop *loop;
 
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
 
 	loop = g_main_loop_new(NULL, FALSE);
 	g_timeout_add(5000,timeout , loop);
-	
-	ret = alarm_schedule_after_delay(service, 1, 1, &tid);
+
+	ret = alarm_schedule_after_delay(app_control, 1, 1, &tid);
 	ret = alarm_cancel(tid);
 
 	g_main_loop_run(loop);
-	
+
 	if(ret == ALARM_ERROR_NONE)
 	{
 		dts_pass("utc_alarm_cancel_positive", "passed");
@@ -212,8 +212,8 @@ static void utc_alarm_cancel_positive(void)
 	{
 		dts_fail("utc_alarm_cancel_positive", "passed");
 	}
-	
-	service_destory(service);
+
+	app_control_destory(app_control);
 	alarm_cancel_all();
 }
 
@@ -223,7 +223,7 @@ static void utc_alarm_cancel_positive(void)
 static void utc_alarm_cancel_negative(void)
 {
 	int ret = ALARM_ERROR_NONE;
-	
+
 	ret = alarm_cancel(NULL);
 	if(ret == ALARM_ERROR_NONE)
 	{
@@ -267,18 +267,18 @@ static void utc_alarm_foreach_registered_alarm_positive(void)
 	int ret = ALARM_ERROR_NONE;
 	time_t current_time;
 	struct tm current_tm;
-	service_h service;
+	app_control_h app_control;
 	int tid;
 	GMainLoop *loop;
 
 	loop = g_main_loop_new(NULL, FALSE);
 	g_timeout_add(1000,timeout , loop);
-	
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
-	alarm_schedule_after_delay(service, 1, 5, &tid);
-	
+
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+	alarm_schedule_after_delay(app_control, 1, 5, &tid);
+
 	ret = alarm_foreach_registered_alarm(foreach_alarm_cb,NULL);
 
 	g_main_loop_run(loop);
@@ -291,8 +291,8 @@ static void utc_alarm_foreach_registered_alarm_positive(void)
 	{
 		dts_pass("utc_alarm_foreach_registered_alarm_positive" , "passed");
 	}
-	
-	service_destory(service);
+
+	app_control_destory(app_control);
 	alarm_cancel_all();
 
 }
@@ -304,7 +304,7 @@ static void utc_alarm_foreach_registered_alarm_positive(void)
 static void utc_alarm_foreach_registered_alarm_negative(void)
 {
 	int ret = ALARM_ERROR_NONE;
-	
+
 	// do i need to call alarm_init??
 	ret = alarm_foreach_registered_alarm(NULL,NULL);
 
@@ -326,7 +326,7 @@ static void utc_alarm_foreach_registered_alarm_negative(void)
 static void utc_alarm_get_scheduled_date_positive(void)
 {
 	struct tm date;
-	service_h service;
+	app_control_h app_control;
 	int ret = ALARM_ERROR_NONE;
 	int tid;
 	GMainLoop *loop;
@@ -334,10 +334,10 @@ static void utc_alarm_get_scheduled_date_positive(void)
 	loop = g_main_loop_new(NULL, FALSE);
 	g_timeout_add(5000,timeout , loop);
 
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
-	alarm_schedule_after_delay(service, 1, 5, &tid);
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+	alarm_schedule_after_delay(app_control, 1, 5, &tid);
 
 	ret = alarm_get_scheduled_date(tid, &date);
 
@@ -351,8 +351,8 @@ static void utc_alarm_get_scheduled_date_positive(void)
 	{
 		dts_fail("utc_alarm_get_date_positive", "failed");
 	}
-	
-	service_destory(service);
+
+	app_control_destory(app_control);
 	alarm_cancel_all();
 }
 
@@ -363,7 +363,7 @@ static void utc_alarm_get_scheduled_date_negative(void)
 {
 	struct tm date;
 	int ret = ALARM_ERROR_NONE;
-	
+
 	ret =  alarm_get_scheduled_date(NULL, &date);
 
 	if(ret == ALARM_ERROR_NONE)
@@ -385,7 +385,7 @@ static void utc_alarm_get_scheduled_period_positive(void)
 {
 	time_t current_time;
 	struct tm current_tm;
-	service_h service;
+	app_control_h app_control;
 	int ret = ALARM_ERROR_NONE;
 	int period = 0;
 	int tid;
@@ -394,10 +394,10 @@ static void utc_alarm_get_scheduled_period_positive(void)
 	loop = g_main_loop_new(NULL, FALSE);
 	g_timeout_add(1000,timeout , loop);
 
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
-	alarm_schedule_after_delay(service, 1, 1, &tid);	
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+	alarm_schedule_after_delay(app_control, 1, 1, &tid);
 
 	ret = alarm_get_scheduled_period(tid, &period);
 
@@ -417,7 +417,7 @@ static void utc_alarm_get_scheduled_period_positive(void)
 		dts_fail("utc_alarm_get_scheduled_period_positive", "failed");
 	}
 
-	service_destory(service);
+	app_control_destory(app_control);
 	alarm_cancel_all();
 
 }
@@ -457,7 +457,7 @@ static void utc_alarm_schedule_at_date_positive(void)
 	time_t current_time;
 	struct tm date;
 	time_t now;
-	service_h service;
+	app_control_h app_control;
 	int tid;
 	GMainLoop *loop;
 
@@ -468,27 +468,27 @@ static void utc_alarm_schedule_at_date_positive(void)
 
 	time(&now);
 	localtime_r(&now, &date);
-	
-	date.tm_sec += 3;
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
 
-	ret = alarm_schedule_at_date(service, &date, 2, &tid);
+	date.tm_sec += 3;
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+
+	ret = alarm_schedule_at_date(app_control, &date, 2, &tid);
 
 	g_main_loop_run(loop);
 
 	if(ret == ALARM_ERROR_NONE)
 	{
 		dts_pass("utc_alarm_schedule_at_date_positive", "passed");
-		
+
 	}
 	else
 	{
 		dts_fail("utc_alarm_schedule_at_date_positive", "failed");
 	}
 
-	service_destory(service);
+	app_control_destory(app_control);
 	alarm_cancel_all();
 
 }
@@ -502,12 +502,12 @@ static void utc_alarm_schedule_at_date_negative(void)
 	time_t current_time;
 	struct tm current_tm;
 	int ret = ALARM_ERROR_NONE;
-	service_h service;
-	
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
-	ret = alarm_schedule_at_date(service, NULL, 1, &tid);	
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+	ret = alarm_schedule_at_date(app_control, NULL, 1, &tid);
 
 	if(ret == ALARM_ERROR_NONE)
 	{
@@ -518,7 +518,7 @@ static void utc_alarm_schedule_at_date_negative(void)
 		dts_pass("utc_alarm_schedule_at_date_negative", "passed");
 	}
 
-	service_destory(service);
+	app_control_destory(app_control);
 	alarm_cancel_all();
 
 }
@@ -531,7 +531,7 @@ static void utc_alarm_schedule_with_recurrence_week_flag_positive(void)
 	time_t current_time;
 	struct tm date;
 	time_t now;
-	service_h service;
+	app_control_h app_control;
 	int tid;
 	GMainLoop *loop;
 
@@ -543,11 +543,11 @@ static void utc_alarm_schedule_with_recurrence_week_flag_positive(void)
 	time(&now);
 	localtime_r(&now, &date);
 	date.tm_sec += 3;
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
 
-	alarm_schedule_with_recurrence_week_flag(service, &date, ALARM_WEEK_FLAG_MONDAY, &tid);
+	alarm_schedule_with_recurrence_week_flag(app_control, &date, ALARM_WEEK_FLAG_MONDAY, &tid);
 
 	g_main_loop_run(loop);
 
@@ -560,7 +560,7 @@ static void utc_alarm_schedule_with_recurrence_week_flag_positive(void)
 		dts_fail("utc_alarm_schedule_with_recurrence_week_flag_positive", "failed");
 	}
 
-	service_destory(service);
+	app_control_destory(app_control);
 	alarm_cancel_all();
 
 }
@@ -602,7 +602,7 @@ static void utc_alarm_get_scheduled_recurrence_week_flag_positive(void)
 	time_t current_time;
 	struct tm date;
 	time_t now;
-	service_h service;
+	app_control_h app_control;
 	int tid;
 	GMainLoop *loop;
 	int week_flag = 0;
@@ -612,15 +612,15 @@ static void utc_alarm_get_scheduled_recurrence_week_flag_positive(void)
 	time(&now);
 	localtime_r(&now, &date);
 	date.tm_sec += 3;
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
 
-	alarm_schedule_with_recurrence_week_flag(service, &date, ALARM_WEEK_FLAG_MONDAY, &tid);
+	alarm_schedule_with_recurrence_week_flag(app_control, &date, ALARM_WEEK_FLAG_MONDAY, &tid);
 
 	alarm_get_scheduled_recurrence_week_flag(tid,  &week_flag);
 
-	
+
 	if(ret != ALARM_ERROR_NONE)
 	{
 		dts_fail("utc_alarm_get_scheduled_recurrence_week_flag_positive", "failed");
@@ -634,7 +634,7 @@ static void utc_alarm_get_scheduled_recurrence_week_flag_positive(void)
 	{
 		dts_fail("utc_alarm_get_scheduled_recurrence_week_flag_positive", "failed");
 	}
-	service_destory(service);
+	app_control_destory(app_control);
 	alarm_cancel_all();
 
 }
@@ -667,7 +667,7 @@ static void utc_alarm_get_current_time_positive(void)
 {
 	struct tm date;
 	int ret = ALARM_ERROR_NONE;
-	
+
 	ret = alarm_get_current_time(&date);
 	if(ret == ALARM_ERROR_NONE)
 	{
@@ -694,12 +694,12 @@ static void utc_alarm_get_current_time_negative(void)
 	}
 }
 
-static void utc_alarm_get_service_positive(void)
+static void utc_alarm_get_app_control_positive(void)
 {
 	time_t current_time;
 	struct tm current_tm;
-	service_h service;
-	service_h service_return;
+	app_control_h app_control;
+	app_control_h app_control_return;
 
 	int ret = ALARM_ERROR_NONE;
 	int tid;
@@ -709,58 +709,58 @@ static void utc_alarm_get_service_positive(void)
 	loop = g_main_loop_new(NULL, FALSE);
 	g_timeout_add(1000,timeout , loop);
 
-	service_create(&service);
-	service_set_package(service, "com.samsung.memo");
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
-	alarm_schedule_after_delay(service, 3, 0, &tid);
+	app_control_create(&app_control);
+	app_control_set_package(app_control, "org.tizen.memo");
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
+	alarm_schedule_after_delay(app_control, 3, 0, &tid);
 
-	ret = alarm_get_service(tid, &service_return);
+	ret = alarm_get_app_control(tid, &app_control_return);
 
 	g_main_loop_run(loop);
 
 	if(ret != ALARM_ERROR_NONE)
 	{
-		dts_fail("utc_alarm_get_service_positive", "failed");
-	}
-	
-	ret = service_get_package(service_return, &package);
-	
-	if(ret != SERVICE_ERROR_NONE)
-	{
-		dts_fail("utc_alarm_get_service_positive", "failed");
+		dts_fail("utc_alarm_get_app_control_positive", "failed");
 	}
 
-	if(!strcmp(package, "com.samsung.memo"))
+	ret = app_control_get_package(app_control_return, &package);
+
+	if(ret != SERVICE_ERROR_NONE)
 	{
-		dts_pass("utc_alarm_get_service_positive", "passed");
+		dts_fail("utc_alarm_get_app_control_positive", "failed");
+	}
+
+	if(!strcmp(package, "org.tizen.memo"))
+	{
+		dts_pass("utc_alarm_get_app_control_positive", "passed");
 	}
 	else
 	{
-		dts_fail("utc_alarm_get_service_positive", "failed");
+		dts_fail("utc_alarm_get_app_control_positive", "failed");
 	}
-	
+
 	if(package != NULL)
 	{
 		free(package);
 	}
-	service_destory(service);
-	service_destory(service_return);
+	app_control_destory(app_control);
+	app_control_destory(app_control_return);
 	alarm_cancel_all();
 
 }
-static void utc_alarm_get_service_negative(void)
+static void utc_alarm_get_app_control_negative(void)
 {
 	int ret = ALARM_ERROR_NONE;
 
-	ret = alarm_get_service(NULL,NULL);
+	ret = alarm_get_app_control(NULL,NULL);
 
 	if(ret == ALARM_ERROR_NONE)
 	{
-		dts_fail("utc_alarm_get_service_negative", "failed");
+		dts_fail("utc_alarm_get_app_control_negative", "failed");
 	}
 	else
 	{
-		dts_pass("utc_alarm_get_service_negative", "passed");
+		dts_pass("utc_alarm_get_app_control_negative", "passed");
 	}
 }
 

@@ -15,18 +15,19 @@
  */
 
 
-#include <app_internal.h>
+#ifndef __TIZEN_APPFW_APP_CONTROL_DOC_H__
+#define __TIZEN_APPFW_APP_CONTROL_DOC_H__
 
-app_device_orientation_e app_get_device_orientation(void)
-{
-	enum appcore_rm rm;
-	app_device_orientation_e dev_orientation = APP_DEVICE_ORIENTATION_0;
+ /**
+ * @ingroup CAPI_APPLICATION_MODULE
+ * @defgroup CAPI_APP_CONTROL_MODULE App Control
+ * @brief The @ref CAPI_APP_CONTROL_MODULE API provides functions to launch other applications.
+ *
+ * @section CAPI_APP_CONTROL_MODULE_HEADER Required Header
+ *   \#include <app_control.h>
+ *
+ * @section CAPI_APP_CONTROLMODULE_OVERVIEW Overview
+ * <a href="../org.tizen.mobile.native.appprogramming/html/guide/app/platform_appcontrol.htm">Platform Application Controls</a>
+ */
 
-	if (appcore_get_rotation_state(&rm) == 0)
-	{
-		dev_orientation = app_convert_appcore_rm(rm);
-	}
-
-	return dev_orientation;
-}
-
+#endif /* __TIZEN_APPFW_APP_CONTROL_DOC_H__ */

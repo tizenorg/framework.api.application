@@ -11,18 +11,13 @@
  * distributed under the License is distributed on an AS IS BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <libintl.h>
-
 #include <dlog.h>
 
-#include <app_private.h>
+#include <app.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -61,11 +56,11 @@ int app_error(app_error_e error, const char* function, const char *description)
 {
 	if (description)
 	{
-		LOGE("[%s] %s(0x%08x) : %s", function, app_error_to_string(error), error, description);	
+		LOGE("[%s] %s(0x%08x) : %s", function, app_error_to_string(error), error, description);
 	}
 	else
 	{
-		LOGE("[%s] %s(0x%08x)", function, app_error_to_string(error), error);	
+		LOGE("[%s] %s(0x%08x)", function, app_error_to_string(error), error);
 	}
 
 	return error;

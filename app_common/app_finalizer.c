@@ -11,15 +11,12 @@
  * distributed under the License is distributed on an AS IS BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <libintl.h>
 
-#include <app_private.h>
+#include <app_internal.h>
 
 typedef struct _app_finalizer_s_ {
 	app_finalizer_cb callback;
@@ -55,7 +52,7 @@ int app_finalizer_add(app_finalizer_cb callback, void *data)
 	{
 		finalizer_tail = finalizer_tail->next;
 	}
-	
+
 	finalizer_tail->next = finalizer_new;
 
 	return APP_ERROR_NONE;
@@ -76,7 +73,7 @@ int app_finalizer_remove(app_finalizer_cb callback)
 		}
 
 		finalizer_node = finalizer_node->next;
-	}	
+	}
 
 	return APP_ERROR_INVALID_PARAMETER;
 }

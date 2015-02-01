@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an AS IS BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 
@@ -28,198 +28,255 @@ static void cleanup(void);
 void (*tet_startup)(void) = startup;
 void (*tet_cleanup)(void) = cleanup;
 
-static void utc_service_create_positive(void);
-static void utc_service_create_negative(void);
+static void utc_app_control_create_positive(void);
+static void utc_app_control_create_negative(void);
 
-static void utc_service_destroy_positive(void);
-static void utc_service_destroy_negative(void);
+static void utc_app_control_destroy_positive(void);
+static void utc_app_control_destroy_negative(void);
 
-static void utc_service_set_operation_positive1(void);
-static void utc_service_set_operation_positive2(void);
-static void utc_service_set_operation_negative(void);
+static void utc_app_control_set_operation_positive1(void);
+static void utc_app_control_set_operation_positive2(void);
+static void utc_app_control_set_operation_negative(void);
 
-static void utc_service_get_operation_positive(void);
-static void utc_service_get_operation_negative1(void);
-static void utc_service_get_operation_negative2(void);
-static void utc_service_get_operation_negative3(void);
+static void utc_app_control_get_operation_positive(void);
+static void utc_app_control_get_operation_negative1(void);
+static void utc_app_control_get_operation_negative2(void);
+static void utc_app_control_get_operation_negative3(void);
 
-static void utc_service_set_uri_positive1(void);
-static void utc_service_set_uri_positive2(void);
-static void utc_service_set_uri_negative(void);
+static void utc_app_control_set_uri_positive1(void);
+static void utc_app_control_set_uri_positive2(void);
+static void utc_app_control_set_uri_negative(void);
 
-static void utc_service_get_uri_positive(void);
-static void utc_service_get_uri_negative1(void);
-static void utc_service_get_uri_negative2(void);
-static void utc_service_get_uri_negative3(void);
+static void utc_app_control_get_uri_positive(void);
+static void utc_app_control_get_uri_negative1(void);
+static void utc_app_control_get_uri_negative2(void);
+static void utc_app_control_get_uri_negative3(void);
 
-static void utc_service_set_mime_positive1(void);
-static void utc_service_set_mime_positive2(void);
-static void utc_service_set_mime_negative(void);
+static void utc_app_control_set_mime_positive1(void);
+static void utc_app_control_set_mime_positive2(void);
+static void utc_app_control_set_mime_negative(void);
 
-static void utc_service_get_mime_positive(void);
-static void utc_service_get_mime_negative1(void);
-static void utc_service_get_mime_negative2(void);
-static void utc_service_get_mime_negative3(void);
+static void utc_app_control_get_mime_positive(void);
+static void utc_app_control_get_mime_negative1(void);
+static void utc_app_control_get_mime_negative2(void);
+static void utc_app_control_get_mime_negative3(void);
 
-static void utc_service_set_package_positive(void);
-static void utc_service_set_package_negative1(void);
-static void utc_service_set_package_negative2(void);
+static void utc_app_control_set_package_positive(void);
+static void utc_app_control_set_package_negative1(void);
+static void utc_app_control_set_package_negative2(void);
 
-static void utc_service_get_package_positive(void);
-static void utc_service_get_package_negative1(void);
-static void utc_service_get_package_negative2(void);
-static void utc_service_get_package_negative3(void);
+static void utc_app_control_get_package_positive(void);
+static void utc_app_control_get_package_negative1(void);
+static void utc_app_control_get_package_negative2(void);
+static void utc_app_control_get_package_negative3(void);
 
-static void utc_service_add_extra_data_positive(void);
-static void utc_service_add_extra_data_negative1(void);
-static void utc_service_add_extra_data_negative2(void);
+static void utc_app_control_set_app_id_positive(void);
+static void utc_app_control_set_app_id_negative1(void);
+static void utc_app_control_set_app_id_negative2(void);
 
-static void utc_service_remove_extra_data_positive(void);
-static void utc_service_remove_extra_data_negative1(void);
-static void utc_service_remove_extra_data_negative2(void);
-static void utc_service_remove_extra_data_negative3(void);
+static void utc_app_control_get_app_id_positive(void);
+static void utc_app_control_get_app_id_negative1(void);
+static void utc_app_control_get_app_id_negative2(void);
+static void utc_app_control_get_app_id_negative3(void);
 
-static void utc_service_get_extra_data_positive(void);
-static void utc_service_get_extra_data_negative1(void);
-static void utc_service_get_extra_data_negative2(void);
-static void utc_service_get_extra_data_negative3(void);
-static void utc_service_get_extra_data_negative4(void);
+static void utc_app_control_set_category_positive(void);
+static void utc_app_control_set_category_negative1(void);
+static void utc_app_control_set_category_negative2(void);
 
-static void utc_service_foreach_extra_data_positive(void);
-static void utc_service_foreach_extra_data_negative1(void);
-static void utc_service_foreach_extra_data_negative2(void);
+static void utc_app_control_get_category_positive(void);
+static void utc_app_control_get_category_negative1(void);
+static void utc_app_control_get_category_negative2(void);
+static void utc_app_control_get_category_negative3(void);
 
-static void utc_service_clone_positive(void);
-static void utc_service_clone_negative1(void);
-static void utc_service_clone_negative2(void);
+static void utc_app_control_set_window_positive(void);
+static void utc_app_control_set_window_negative1(void);
+static void utc_app_control_set_window_negative2(void);
 
-static void utc_service_send_launch_request_positive1(void);
-static void utc_service_send_launch_request_positive2(void);
-static void utc_service_send_launch_request_positive3(void);
-static void utc_service_send_launch_request_negative1(void);
-static void utc_service_send_launch_request_negative2(void);
+static void utc_app_control_get_window_positive(void);
+static void utc_app_control_get_window_negative1(void);
+static void utc_app_control_get_window_negative2(void);
+static void utc_app_control_get_window_negative3(void);
 
-static void utc_service_reply_to_launch_request_negative1(void);
-static void utc_service_reply_to_launch_request_negative2(void);
+static void utc_app_control_add_extra_data_positive(void);
+static void utc_app_control_add_extra_data_negative1(void);
+static void utc_app_control_add_extra_data_negative2(void);
 
-static void utc_service_foreach_app_matched_positive(void);
-static void utc_service_foreach_app_matched_negative1(void);
-static void utc_service_foreach_app_matched_negative2(void);
+static void utc_app_control_remove_extra_data_positive(void);
+static void utc_app_control_remove_extra_data_negative1(void);
+static void utc_app_control_remove_extra_data_negative2(void);
+static void utc_app_control_remove_extra_data_negative3(void);
 
-static void utc_service_add_extra_data_array_positive(void);
-static void utc_service_add_extra_data_array_negative1(void);
-static void utc_service_add_extra_data_array_negative2(void);
-static void utc_service_add_extra_data_array_negative3(void);
+static void utc_app_control_get_extra_data_positive(void);
+static void utc_app_control_get_extra_data_negative1(void);
+static void utc_app_control_get_extra_data_negative2(void);
+static void utc_app_control_get_extra_data_negative3(void);
+static void utc_app_control_get_extra_data_negative4(void);
 
-static void utc_service_get_extra_data_array_positive(void);
-static void utc_service_get_extra_data_array_negative1(void);
-static void utc_service_get_extra_data_array_negative2(void);
-static void utc_service_get_extra_data_array_negative3(void);
-static void utc_service_get_extra_data_array_negative4(void);
-static void utc_service_get_extra_data_array_negative5(void);
+static void utc_app_control_foreach_extra_data_positive(void);
+static void utc_app_control_foreach_extra_data_negative1(void);
+static void utc_app_control_foreach_extra_data_negative2(void);
 
-static void utc_service_is_extra_data_array_positive(void);
-static void utc_service_is_extra_data_array_negative1(void);
-static void utc_service_is_extra_data_array_negative2(void);
-static void utc_service_is_extra_data_array_negative3(void);
-static void utc_service_is_extra_data_array_negative4(void);
+static void utc_app_control_clone_positive(void);
+static void utc_app_control_clone_negative1(void);
+static void utc_app_control_clone_negative2(void);
+
+static void utc_app_control_send_launch_request_positive1(void);
+static void utc_app_control_send_launch_request_positive2(void);
+static void utc_app_control_send_launch_request_positive3(void);
+static void utc_app_control_send_launch_request_negative1(void);
+static void utc_app_control_send_launch_request_negative2(void);
+
+static void utc_app_control_reply_to_launch_request_negative1(void);
+static void utc_app_control_reply_to_launch_request_negative2(void);
+
+static void utc_app_control_foreach_app_matched_positive(void);
+static void utc_app_control_foreach_app_matched_negative1(void);
+static void utc_app_control_foreach_app_matched_negative2(void);
+
+static void utc_app_control_add_extra_data_array_positive(void);
+static void utc_app_control_add_extra_data_array_negative1(void);
+static void utc_app_control_add_extra_data_array_negative2(void);
+static void utc_app_control_add_extra_data_array_negative3(void);
+
+static void utc_app_control_get_extra_data_array_positive(void);
+static void utc_app_control_get_extra_data_array_negative1(void);
+static void utc_app_control_get_extra_data_array_negative2(void);
+static void utc_app_control_get_extra_data_array_negative3(void);
+static void utc_app_control_get_extra_data_array_negative4(void);
+static void utc_app_control_get_extra_data_array_negative5(void);
+
+static void utc_app_control_is_extra_data_array_positive(void);
+static void utc_app_control_is_extra_data_array_negative1(void);
+static void utc_app_control_is_extra_data_array_negative2(void);
+static void utc_app_control_is_extra_data_array_negative3(void);
+static void utc_app_control_is_extra_data_array_negative4(void);
 
 
-static void utc_service_is_reply_requested_positive1(void);
-static void utc_service_is_reply_requested_negative1(void);
-static void utc_service_is_reply_requested_negative2(void);
-static void utc_service_is_reply_requested_negative3(void);
+static void utc_app_control_is_reply_requested_positive1(void);
+static void utc_app_control_is_reply_requested_negative1(void);
+static void utc_app_control_is_reply_requested_negative2(void);
+static void utc_app_control_is_reply_requested_negative3(void);
 
-static void utc_service_get_caller_positive1(void);
-static void utc_service_get_caller_negative1(void);
-static void utc_service_get_caller_negative2(void);
-static void utc_service_get_caller_negative3(void);
+static void utc_app_control_get_caller_positive1(void);
+static void utc_app_control_get_caller_negative1(void);
+static void utc_app_control_get_caller_negative2(void);
+static void utc_app_control_get_caller_negative3(void);
+
+static void utc_app_control_to_bundle_positive1(void);
+static void utc_app_control_to_bundle_negative1(void);
+static void utc_app_control_to_bundle_negative2(void);
+static void utc_app_control_to_bundle_negative3(void);
 
 
 struct tet_testlist tet_testlist[] = {
-	{ utc_service_create_positive, 1 },
-	{ utc_service_create_negative, 1 },
-	{ utc_service_destroy_positive, 1 },
-	{ utc_service_destroy_negative, 1 },
-	{ utc_service_set_operation_positive1, 1 },
-	{ utc_service_set_operation_positive2, 1 },
-	{ utc_service_set_operation_negative, 1 },
-	{ utc_service_get_operation_positive, 1 },
-	{ utc_service_get_operation_negative1, 1 },
-	{ utc_service_get_operation_negative2, 1 },
-	{ utc_service_get_operation_negative3, 1 },
-	{ utc_service_set_uri_positive1, 1 },
-	{ utc_service_set_uri_positive2, 1 },	
-	{ utc_service_set_uri_negative, 1 },
-	{ utc_service_get_uri_positive, 1 },
-	{ utc_service_get_uri_negative1, 1 },
-	{ utc_service_get_uri_negative2, 1 },
-	{ utc_service_get_uri_negative3, 1 },
-	{ utc_service_set_mime_positive1, 1 },
-	{ utc_service_set_mime_positive2, 1 },
-	{ utc_service_set_mime_negative, 1 },
-	{ utc_service_get_mime_positive, 1 },
-	{ utc_service_get_mime_negative1, 1 },
-	{ utc_service_get_mime_negative2, 1 },
-	{ utc_service_get_mime_negative3, 1 },
-	{ utc_service_set_package_positive, 1 },
-	{ utc_service_set_package_negative1, 1 },
-	{ utc_service_set_package_negative2, 1 },
-	{ utc_service_get_package_positive, 1 },
-	{ utc_service_get_package_negative1, 1 },
-	{ utc_service_get_package_negative2, 1 },
-	{ utc_service_get_package_negative3, 1 },
-	{ utc_service_add_extra_data_positive, 1 },
-	{ utc_service_add_extra_data_negative1, 1 },
-	{ utc_service_add_extra_data_negative2, 1 },
-	{ utc_service_remove_extra_data_positive, 1 },
-	{ utc_service_remove_extra_data_negative1, 1 },
-	{ utc_service_remove_extra_data_negative2, 1 },
-	{ utc_service_remove_extra_data_negative3, 1 },
-	{ utc_service_get_extra_data_positive, 1 },
-	{ utc_service_get_extra_data_negative1, 1 },
-	{ utc_service_get_extra_data_negative2, 1 },
-	{ utc_service_get_extra_data_negative3, 1 },
-	{ utc_service_get_extra_data_negative4, 1 },
-	{ utc_service_foreach_extra_data_positive, 1 },
-	{ utc_service_foreach_extra_data_negative1, 1 },
-	{ utc_service_foreach_extra_data_negative2, 1 },
-	{ utc_service_clone_positive, 1 },
-	{ utc_service_clone_negative1, 1 },
-	{ utc_service_clone_negative2, 1 },
-	{ utc_service_send_launch_request_positive1, 1 },
-	{ utc_service_send_launch_request_positive2, 1 },
-	{ utc_service_send_launch_request_positive3, 1 },
-	{ utc_service_send_launch_request_negative1, 1 },
-	{ utc_service_send_launch_request_negative2, 1 },
-	{ utc_service_reply_to_launch_request_negative1, 1 },
-	{ utc_service_reply_to_launch_request_negative2, 1 },
-	{ utc_service_foreach_app_matched_positive, 1 },
-	{ utc_service_foreach_app_matched_negative1, 1 },
-	{ utc_service_foreach_app_matched_negative2, 1 },
-	{ utc_service_add_extra_data_array_positive, 1 },
-	{ utc_service_add_extra_data_array_negative1, 1 },
-	{ utc_service_add_extra_data_array_negative2, 1 },
-	{ utc_service_add_extra_data_array_negative3, 1 },
-	{ utc_service_get_extra_data_array_positive, 1 },
-	{ utc_service_get_extra_data_array_negative1, 1 },
-	{ utc_service_get_extra_data_array_negative2, 1 },
-	{ utc_service_get_extra_data_array_negative3, 1 },
-	{ utc_service_get_extra_data_array_negative4, 1 },
-	{ utc_service_get_extra_data_array_negative5, 1 },
-	{ utc_service_is_extra_data_array_positive, 1 },
-	{ utc_service_is_extra_data_array_negative1, 1 },
-	{ utc_service_is_extra_data_array_negative2, 1 },
-	{ utc_service_is_extra_data_array_negative3, 1 },
-	{ utc_service_is_extra_data_array_negative4, 1 },
-	{ utc_service_is_reply_requested_positive1, 1 },
-	{ utc_service_is_reply_requested_negative1, 1 },
-	{ utc_service_is_reply_requested_negative2, 1 },
-	{ utc_service_is_reply_requested_negative3, 1 },
-	{ utc_service_get_caller_positive1, 1 },
-	{ utc_service_get_caller_negative1, 1 },
-	{ utc_service_get_caller_negative2, 1 },
-	{ utc_service_get_caller_negative3, 1 },
+	{ utc_app_control_create_positive, 1 },
+	{ utc_app_control_create_negative, 1 },
+	{ utc_app_control_destroy_positive, 1 },
+	{ utc_app_control_destroy_negative, 1 },
+	{ utc_app_control_set_operation_positive1, 1 },
+	{ utc_app_control_set_operation_positive2, 1 },
+	{ utc_app_control_set_operation_negative, 1 },
+	{ utc_app_control_get_operation_positive, 1 },
+	{ utc_app_control_get_operation_negative1, 1 },
+	{ utc_app_control_get_operation_negative2, 1 },
+	{ utc_app_control_get_operation_negative3, 1 },
+	{ utc_app_control_set_uri_positive1, 1 },
+	{ utc_app_control_set_uri_positive2, 1 },
+	{ utc_app_control_set_uri_negative, 1 },
+	{ utc_app_control_get_uri_positive, 1 },
+	{ utc_app_control_get_uri_negative1, 1 },
+	{ utc_app_control_get_uri_negative2, 1 },
+	{ utc_app_control_get_uri_negative3, 1 },
+	{ utc_app_control_set_mime_positive1, 1 },
+	{ utc_app_control_set_mime_positive2, 1 },
+	{ utc_app_control_set_mime_negative, 1 },
+	{ utc_app_control_get_mime_positive, 1 },
+	{ utc_app_control_get_mime_negative1, 1 },
+	{ utc_app_control_get_mime_negative2, 1 },
+	{ utc_app_control_get_mime_negative3, 1 },
+	{ utc_app_control_set_package_positive, 1 },
+	{ utc_app_control_set_package_negative1, 1 },
+	{ utc_app_control_set_package_negative2, 1 },
+	{ utc_app_control_get_package_positive, 1 },
+	{ utc_app_control_get_package_negative1, 1 },
+	{ utc_app_control_get_package_negative2, 1 },
+	{ utc_app_control_get_package_negative3, 1 },
+	{ utc_app_control_set_app_id_positive, 1 },
+	{ utc_app_control_set_app_id_negative1, 1 },
+	{ utc_app_control_set_app_id_negative2, 1 },
+	{ utc_app_control_get_app_id_positive, 1 },
+	{ utc_app_control_get_app_id_negative1, 1 },
+	{ utc_app_control_get_app_id_negative2, 1 },
+	{ utc_app_control_get_app_id_negative3, 1 },
+	{ utc_app_control_set_category_positive, 1 },
+	{ utc_app_control_set_category_negative1, 1 },
+	{ utc_app_control_set_category_negative2, 1 },
+	{ utc_app_control_get_category_positive, 1 },
+	{ utc_app_control_get_category_negative1, 1 },
+	{ utc_app_control_get_category_negative2, 1 },
+	{ utc_app_control_get_category_negative3, 1 },
+	{ utc_app_control_set_window_positive, 1 },
+	{ utc_app_control_set_window_negative1, 1 },
+	{ utc_app_control_set_window_negative2, 1 },
+	{ utc_app_control_get_window_positive, 1 },
+	{ utc_app_control_get_window_negative1, 1 },
+	{ utc_app_control_get_window_negative2, 1 },
+	{ utc_app_control_get_window_negative3, 1 },
+	{ utc_app_control_add_extra_data_positive, 1 },
+	{ utc_app_control_add_extra_data_negative1, 1 },
+	{ utc_app_control_add_extra_data_negative2, 1 },
+	{ utc_app_control_remove_extra_data_positive, 1 },
+	{ utc_app_control_remove_extra_data_negative1, 1 },
+	{ utc_app_control_remove_extra_data_negative2, 1 },
+	{ utc_app_control_remove_extra_data_negative3, 1 },
+	{ utc_app_control_get_extra_data_positive, 1 },
+	{ utc_app_control_get_extra_data_negative1, 1 },
+	{ utc_app_control_get_extra_data_negative2, 1 },
+	{ utc_app_control_get_extra_data_negative3, 1 },
+	{ utc_app_control_get_extra_data_negative4, 1 },
+	{ utc_app_control_foreach_extra_data_positive, 1 },
+	{ utc_app_control_foreach_extra_data_negative1, 1 },
+	{ utc_app_control_foreach_extra_data_negative2, 1 },
+	{ utc_app_control_clone_positive, 1 },
+	{ utc_app_control_clone_negative1, 1 },
+	{ utc_app_control_clone_negative2, 1 },
+	{ utc_app_control_send_launch_request_positive1, 1 },
+	{ utc_app_control_send_launch_request_positive2, 1 },
+	{ utc_app_control_send_launch_request_positive3, 1 },
+	{ utc_app_control_send_launch_request_negative1, 1 },
+	{ utc_app_control_send_launch_request_negative2, 1 },
+	{ utc_app_control_reply_to_launch_request_negative1, 1 },
+	{ utc_app_control_reply_to_launch_request_negative2, 1 },
+	{ utc_app_control_foreach_app_matched_positive, 1 },
+	{ utc_app_control_foreach_app_matched_negative1, 1 },
+	{ utc_app_control_foreach_app_matched_negative2, 1 },
+	{ utc_app_control_add_extra_data_array_positive, 1 },
+	{ utc_app_control_add_extra_data_array_negative1, 1 },
+	{ utc_app_control_add_extra_data_array_negative2, 1 },
+	{ utc_app_control_add_extra_data_array_negative3, 1 },
+	{ utc_app_control_get_extra_data_array_positive, 1 },
+	{ utc_app_control_get_extra_data_array_negative1, 1 },
+	{ utc_app_control_get_extra_data_array_negative2, 1 },
+	{ utc_app_control_get_extra_data_array_negative3, 1 },
+	{ utc_app_control_get_extra_data_array_negative4, 1 },
+	{ utc_app_control_get_extra_data_array_negative5, 1 },
+	{ utc_app_control_is_extra_data_array_positive, 1 },
+	{ utc_app_control_is_extra_data_array_negative1, 1 },
+	{ utc_app_control_is_extra_data_array_negative2, 1 },
+	{ utc_app_control_is_extra_data_array_negative3, 1 },
+	{ utc_app_control_is_extra_data_array_negative4, 1 },
+	{ utc_app_control_is_reply_requested_positive1, 1 },
+	{ utc_app_control_is_reply_requested_negative1, 1 },
+	{ utc_app_control_is_reply_requested_negative2, 1 },
+	{ utc_app_control_is_reply_requested_negative3, 1 },
+	{ utc_app_control_get_caller_positive1, 1 },
+	{ utc_app_control_get_caller_negative1, 1 },
+	{ utc_app_control_get_caller_negative2, 1 },
+	{ utc_app_control_get_caller_negative3, 1 },
+	{ utc_app_control_to_bundle_positive1, 1 },
+	{ utc_app_control_to_bundle_negative1, 1 },
+	{ utc_app_control_to_bundle_negative2, 1 },
+	{ utc_app_control_to_bundle_negative3, 1 },
 	{ NULL, 0 },
 };
 
@@ -234,14 +291,14 @@ static void cleanup(void)
 }
 
 
-static void utc_service_create_positive(void)
+static void utc_app_control_create_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	ret = service_create(&service);
+	ret = app_control_create(&app_control);
 
 	dts_message(API_NAME, "ret(%d)", ret);
 
@@ -255,12 +312,12 @@ static void utc_service_create_positive(void)
 	}
 }
 
-static void utc_service_create_negative(void)
+static void utc_app_control_create_negative(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	ret = service_create(NULL);
+	ret = app_control_create(NULL);
 
 	dts_message(API_NAME, "ret(%d)", ret);
 
@@ -275,17 +332,17 @@ static void utc_service_create_negative(void)
 }
 
 
-static void utc_service_destroy_positive(void)
+static void utc_app_control_destroy_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_destroy(service);
-	
+	ret = app_control_destroy(app_control);
+
 	dts_message(API_NAME, "ret(%d)", ret);
 
 	if(ret == SERVICE_ERROR_NONE)
@@ -299,13 +356,13 @@ static void utc_service_destroy_positive(void)
 }
 
 
-static void utc_service_destroy_negative(void)
+static void utc_app_control_destroy_negative(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	ret = service_destroy(NULL);
-	
+	ret = app_control_destroy(NULL);
+
 	dts_message(API_NAME, "ret(%d)", ret);
 
 	if(ret != SERVICE_ERROR_NONE)
@@ -319,18 +376,18 @@ static void utc_service_destroy_negative(void)
 }
 
 
-static void utc_service_set_operation_positive1(void)
+static void utc_app_control_set_operation_positive1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	const char *input_value = "INPUT_VALUE";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_set_operation(service, input_value);
+	ret = app_control_set_operation(app_control, input_value);
 
 	dts_message(API_NAME, "ret(%d)", ret);
 
@@ -343,20 +400,20 @@ static void utc_service_set_operation_positive1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 
 }
 
-static void utc_service_set_operation_positive2(void)
+static void utc_app_control_set_operation_positive2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_set_operation(service, NULL);
+	ret = app_control_set_operation(app_control, NULL);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -367,16 +424,16 @@ static void utc_service_set_operation_positive2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_set_operation_negative(void)
+static void utc_app_control_set_operation_negative(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 
-	ret = service_set_operation(NULL, input_value);
+	ret = app_control_set_operation(NULL, input_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -390,20 +447,20 @@ static void utc_service_set_operation_negative(void)
 
 
 
-static void utc_service_get_operation_positive(void)
+static void utc_app_control_get_operation_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_operation(service, input_value);
+	app_control_set_operation(app_control, input_value);
 
-	ret = service_get_operation(service, &output_value);
+	ret = app_control_get_operation(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -421,17 +478,17 @@ static void utc_service_get_operation_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 
 }
 
-static void utc_service_get_operation_negative1(void)
+static void utc_app_control_get_operation_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	ret = service_get_operation(NULL, &output_value);
+	ret = app_control_get_operation(NULL, &output_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -443,16 +500,16 @@ static void utc_service_get_operation_negative1(void)
 	}
 }
 
-static void utc_service_get_operation_negative2(void)
+static void utc_app_control_get_operation_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_operation(service, NULL);
+	ret = app_control_get_operation(app_control, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -463,20 +520,20 @@ static void utc_service_get_operation_negative2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_operation_negative3(void)
+static void utc_app_control_get_operation_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_operation(service, &output_value);
+	ret = app_control_get_operation(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE && output_value == NULL)
 	{
@@ -487,44 +544,20 @@ static void utc_service_get_operation_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_set_uri_positive1(void)
+static void utc_app_control_set_uri_positive1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_set_uri(service, input_value);
-	
-	if(ret == SERVICE_ERROR_NONE)
-	{
-		dts_pass(API_NAME, "passed");
-	}
-	else
-	{
-		dts_fail(API_NAME, "failed");
-	}
-
-	service_destroy(service);
-
-}
-
-static void utc_service_set_uri_positive2(void)
-{
-	const char *API_NAME = __FUNCTION__;
-	int ret = SERVICE_ERROR_NONE;
-
-	service_h service;
-
-	service_create(&service);
-
-	ret = service_set_uri(service, NULL);
+	ret = app_control_set_uri(app_control, input_value);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -535,17 +568,41 @@ static void utc_service_set_uri_positive2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 
 }
 
-static void utc_service_set_uri_negative(void)
+static void utc_app_control_set_uri_positive2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_set_uri(app_control, NULL);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+
+}
+
+static void utc_app_control_set_uri_negative(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 
-	ret = service_get_uri(NULL, input_value);
+	ret = app_control_get_uri(NULL, input_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -557,20 +614,20 @@ static void utc_service_set_uri_negative(void)
 	}
 }
 
-static void utc_service_get_uri_positive(void)
+static void utc_app_control_get_uri_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_uri(service, input_value);
+	app_control_set_uri(app_control, input_value);
 
-	service_get_uri(service, &output_value);
+	app_control_get_uri(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -588,21 +645,21 @@ static void utc_service_get_uri_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 
 }
 
-static void utc_service_get_uri_negative1(void)
+static void utc_app_control_get_uri_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_uri(service, &output_value);
+	ret = app_control_get_uri(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE && output_value == NULL)
 	{
@@ -613,17 +670,17 @@ static void utc_service_get_uri_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 
 }
 
-static void utc_service_get_uri_negative2(void)
+static void utc_app_control_get_uri_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	ret = service_get_uri(NULL, &output_value);
+	ret = app_control_get_uri(NULL, &output_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -636,16 +693,16 @@ static void utc_service_get_uri_negative2(void)
 
 }
 
-static void utc_service_get_uri_negative3(void)
+static void utc_app_control_get_uri_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_uri(service, NULL);
+	ret = app_control_get_uri(app_control, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -656,44 +713,21 @@ static void utc_service_get_uri_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 
 }
 
-static void utc_service_set_mime_positive1(void)
+static void utc_app_control_set_mime_positive1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_set_mime(service, input_value);
-
-	if(ret == SERVICE_ERROR_NONE)
-	{
-		dts_pass(API_NAME, "passed");		
-	}
-	else
-	{
-		dts_fail(API_NAME, "failed");
-	}
-
-	service_destroy(service);
-}
-
-static void utc_service_set_mime_positive2(void)
-{
-	const char *API_NAME = __FUNCTION__;
-	int ret = SERVICE_ERROR_NONE;
-
-	service_h service;
-
-	service_create(&service);
-
-	ret = service_set_mime(service, NULL);
+	ret = app_control_set_mime(app_control, input_value);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -704,17 +738,40 @@ static void utc_service_set_mime_positive2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_set_mime_positive2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_set_mime(app_control, NULL);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
 }
 
 
-static void utc_service_set_mime_negative(void)
+static void utc_app_control_set_mime_negative(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 
-	ret = service_set_mime(NULL, input_value);
+	ret = app_control_set_mime(NULL, input_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -726,20 +783,20 @@ static void utc_service_set_mime_negative(void)
 	}
 }
 
-static void utc_service_get_mime_positive(void)
+static void utc_app_control_get_mime_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_mime(service, input_value);
+	app_control_set_mime(app_control, input_value);
 
-	ret = service_get_mime(service, &output_value);
+	ret = app_control_get_mime(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -757,20 +814,20 @@ static void utc_service_get_mime_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_mime_negative1(void)
+static void utc_app_control_get_mime_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_mime(service, &output_value);
+	ret = app_control_get_mime(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE && output_value == NULL)
 	{
@@ -781,16 +838,16 @@ static void utc_service_get_mime_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_mime_negative2(void)
+static void utc_app_control_get_mime_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	ret = service_get_mime(NULL, &output_value);
+	ret = app_control_get_mime(NULL, &output_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -802,16 +859,16 @@ static void utc_service_get_mime_negative2(void)
 	}
 }
 
-static void utc_service_get_mime_negative3(void)
+static void utc_app_control_get_mime_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_mime(service, NULL);
+	ret = app_control_get_mime(app_control, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -822,21 +879,21 @@ static void utc_service_get_mime_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_set_package_positive(void)
+static void utc_app_control_set_package_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_set_package(service, input_value);
-	
+	ret = app_control_set_package(app_control, input_value);
+
 	if(ret == SERVICE_ERROR_NONE)
 	{
 		dts_pass(API_NAME, "passed");
@@ -846,16 +903,16 @@ static void utc_service_set_package_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_set_package_negative1(void)
+static void utc_app_control_set_package_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
-	char *output_value;
+	const char *input_value = "INPUT_VALUE";
 
-	ret = service_get_package(NULL, &output_value);
+	ret = app_control_set_package(NULL, input_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -867,16 +924,12 @@ static void utc_service_set_package_negative1(void)
 	}
 }
 
-static void utc_service_set_package_negative2(void)
+static void utc_app_control_set_package_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
-
-	service_create(&service);
-
-	ret = service_get_package(service, NULL);
+	ret = app_control_set_package(NULL, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -886,24 +939,22 @@ static void utc_service_set_package_negative2(void)
 	{
 		dts_fail(API_NAME, "failed");
 	}
-
-	service_destroy(service);
 }
 
-static void utc_service_get_package_positive(void)
+static void utc_app_control_get_package_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	const char *input_value = "INPUT_VALUE";
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_package(service, input_value);
+	app_control_set_package(app_control, input_value);
 
-	ret = service_get_package(service, &output_value);
+	ret = app_control_get_package(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -921,20 +972,20 @@ static void utc_service_get_package_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_package_negative1(void)
+static void utc_app_control_get_package_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_package(service, &output_value);
+	ret = app_control_get_package(app_control, &output_value);
 
 	if(ret == SERVICE_ERROR_NONE && output_value == NULL)
 	{
@@ -945,16 +996,16 @@ static void utc_service_get_package_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_package_negative2(void)
+static void utc_app_control_get_package_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *output_value;
 
-	ret = service_get_package(NULL, &output_value);
+	ret = app_control_get_package(NULL, &output_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -966,16 +1017,16 @@ static void utc_service_get_package_negative2(void)
 	}
 }
 
-static void utc_service_get_package_negative3(void)
+static void utc_app_control_get_package_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_package(service, NULL);
+	ret = app_control_get_package(app_control, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -986,21 +1037,492 @@ static void utc_service_get_package_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_add_extra_data_positive(void)
+static void utc_app_control_set_app_id_positive(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	const char *input_value = "INPUT_VALUE";
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_set_app_id(app_control, input_value);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_set_app_id_negative1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	ret = app_control_set_app_id(NULL, NULL);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_set_app_id_negative2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	const char *input_value = "INPUT_VALUE";
+
+	ret = app_control_set_app_id(NULL, input_value);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_get_app_id_positive(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	const char *input_value = "INPUT_VALUE";
+	char *output_value;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	app_control_set_app_id(app_control, input_value);
+
+	ret = app_control_get_app_id(app_control, &output_value);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		if(!strcmp(input_value, output_value))
+		{
+			dts_pass(API_NAME, "passed");
+		}
+		else
+		{
+			dts_fail(API_NAME, "failed");
+		}
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_get_app_id_negative1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	char *output_value;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_get_app_id(app_control, &output_value);
+
+	if(ret == SERVICE_ERROR_NONE && output_value == NULL)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_get_app_id_negative2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	char *output_value;
+
+	ret = app_control_get_app_id(NULL, &output_value);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_get_app_id_negative3(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_get_app_id(app_control, NULL);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_set_category_positive(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	const char *input_value = "INPUT_VALUE";
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_set_category(app_control, input_value);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_set_category_negative1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	ret = app_control_set_category(NULL, NULL);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_set_category_negative2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	const char *input_value = "INPUT_VALUE";
+
+	ret = app_control_set_category(NULL, input_value);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_get_category_positive(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	const char *input_value = "INPUT_VALUE";
+	char *output_value;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	app_control_set_category(app_control, input_value);
+
+	ret = app_control_get_category(app_control, &output_value);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		if(!strcmp(input_value, output_value))
+		{
+			dts_pass(API_NAME, "passed");
+		}
+		else
+		{
+			dts_fail(API_NAME, "failed");
+		}
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_get_category_negative1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	char *output_value;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_get_category(app_control, &output_value);
+
+	if(ret == SERVICE_ERROR_NONE && output_value == NULL)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_get_category_negative2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	char *output_value;
+
+	ret = app_control_get_category(NULL, &output_value);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_get_category_negative3(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_get_category(app_control, NULL);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_set_window_positive(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	unsigned int wid = 5;
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_set_window(app_control, wid);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_set_window_negative1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	ret = app_control_set_window(NULL, -1);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_set_window_negative2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	unsigned int wid = 5;
+
+	ret = app_control_set_window(NULL, wid);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_get_window_positive(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	unsigned int wid = 5;
+	int output_value = 0;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	app_control_set_window(app_control, wid);
+
+	ret = app_control_get_window(app_control, &output_value);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		if(wid == output_value)
+		{
+			dts_pass(API_NAME, "passed");
+		}
+		else
+		{
+			dts_fail(API_NAME, "failed");
+		}
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_get_window_negative1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	int output_value = 0;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_get_window(app_control, &output_value);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_get_window_negative2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	int output_value = 0;
+
+	ret = app_control_get_window(NULL, &output_value);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_get_window_negative3(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_get_window(app_control, NULL);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+static void utc_app_control_add_extra_data_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 	char *value = "EXTRA_VALUE";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_add_extra_data(service, key, value);
+	ret = app_control_add_extra_data(app_control, key, value);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -1011,10 +1533,10 @@ static void utc_service_add_extra_data_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_add_extra_data_negative1(void)
+static void utc_app_control_add_extra_data_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int passed = 0;
@@ -1022,13 +1544,13 @@ static void utc_service_add_extra_data_negative1(void)
 	char *key = "EXTRA_KEY";
 	char *value = "EXTRA_VALUE";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
 
 	// key : unll
-	ret = service_add_extra_data(service, NULL, value);
+	ret = app_control_add_extra_data(app_control, NULL, value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1036,7 +1558,7 @@ static void utc_service_add_extra_data_negative1(void)
 	}
 
 	// key : zero-length
-	ret = service_add_extra_data(service, "", value);
+	ret = app_control_add_extra_data(app_control, "", value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1044,7 +1566,7 @@ static void utc_service_add_extra_data_negative1(void)
 	}
 
 	// value : null
-	ret = service_add_extra_data(service, key, NULL);
+	ret = app_control_add_extra_data(app_control, key, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1052,7 +1574,7 @@ static void utc_service_add_extra_data_negative1(void)
 	}
 
 	// value : zero-length
-	ret = service_add_extra_data(service, key, "");
+	ret = app_control_add_extra_data(app_control, key, "");
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1068,17 +1590,17 @@ static void utc_service_add_extra_data_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_add_extra_data_negative2(void)
+static void utc_app_control_add_extra_data_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 	char *value = "EXTRA_VALUE";
 
-	ret = service_add_extra_data(NULL, key, value);
+	ret = app_control_add_extra_data(NULL, key, value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1090,20 +1612,20 @@ static void utc_service_add_extra_data_negative2(void)
 	}
 }
 
-static void utc_service_remove_extra_data_positive(void)
+static void utc_app_control_remove_extra_data_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 	char *value = "EXTRA_VALUE";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data(service, key, value);
+	app_control_add_extra_data(app_control, key, value);
 
-	ret = service_remove_extra_data(service, key);
+	ret = app_control_remove_extra_data(app_control, key);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -1114,20 +1636,20 @@ static void utc_service_remove_extra_data_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_remove_extra_data_negative1(void)
+static void utc_app_control_remove_extra_data_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_remove_extra_data(service, key);
+	ret = app_control_remove_extra_data(app_control, key);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1138,16 +1660,16 @@ static void utc_service_remove_extra_data_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_remove_extra_data_negative2(void)
+static void utc_app_control_remove_extra_data_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 
-	ret = service_remove_extra_data(NULL, key);
+	ret = app_control_remove_extra_data(NULL, key);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1159,16 +1681,16 @@ static void utc_service_remove_extra_data_negative2(void)
 	}
 }
 
-static void utc_service_remove_extra_data_negative3(void)
+static void utc_app_control_remove_extra_data_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_remove_extra_data(service, NULL);
+	ret = app_control_remove_extra_data(app_control, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1179,10 +1701,10 @@ static void utc_service_remove_extra_data_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_positive(void)
+static void utc_app_control_get_extra_data_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1190,13 +1712,13 @@ static void utc_service_get_extra_data_positive(void)
 	char *value = "EXTRA_VALUE";
 	char *ret_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data(service, key, value);
+	app_control_add_extra_data(app_control, key, value);
 
-	ret = service_get_extra_data(service, key, &ret_value);
+	ret = app_control_get_extra_data(app_control, key, &ret_value);
 
 	if(ret == SERVICE_ERROR_NONE && !strcmp(ret_value, value))
 	{
@@ -1207,21 +1729,21 @@ static void utc_service_get_extra_data_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_negative1(void)
+static void utc_app_control_get_extra_data_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 	char *ret_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_extra_data(service, key, &ret_value);
+	ret = app_control_get_extra_data(app_control, key, &ret_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1232,17 +1754,17 @@ static void utc_service_get_extra_data_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_negative2(void)
+static void utc_app_control_get_extra_data_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 	char *ret_value;
 
-	ret = service_get_extra_data(NULL, key, &ret_value);
+	ret = app_control_get_extra_data(NULL, key, &ret_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1255,18 +1777,18 @@ static void utc_service_get_extra_data_negative2(void)
 
 }
 
-static void utc_service_get_extra_data_negative3(void)
+static void utc_app_control_get_extra_data_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	char *ret_value;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_extra_data(service, NULL, &ret_value);
+	ret = app_control_get_extra_data(app_control, NULL, &ret_value);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1277,20 +1799,20 @@ static void utc_service_get_extra_data_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_negative4(void)
+static void utc_app_control_get_extra_data_negative4(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 	char *key = "EXTRA_KEY";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_extra_data(service, key, NULL);
+	ret = app_control_get_extra_data(app_control, key, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1301,17 +1823,17 @@ static void utc_service_get_extra_data_negative4(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
 #define NUM_EXTRA_DATA 32
 
-bool service_extra_data(service_h service, const char *key, void *user_data)
+bool app_control_extra_data(app_control_h app_control, const char *key, void *user_data)
 {
 	bool *passed = (bool*)user_data;
 	char *value;
 
-	service_get_extra_data(service, key, &value);
+	app_control_get_extra_data(app_control, key, &value);
 
 	if (!strcmp(key, value))
 	{
@@ -1322,7 +1844,7 @@ bool service_extra_data(service_h service, const char *key, void *user_data)
 	return true;
 }
 
-static void utc_service_foreach_extra_data_positive(void)
+static void utc_app_control_foreach_extra_data_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1331,17 +1853,17 @@ static void utc_service_foreach_extra_data_positive(void)
 	int num_passed = 0;
 	char buf[32] = {0, };
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
 	for (i=0; i<NUM_EXTRA_DATA; i++)
 	{
 		snprintf(buf, sizeof(buf), "%d", i);
-		service_add_extra_data(service, buf, buf);
+		app_control_add_extra_data(app_control, buf, buf);
 	}
 
-	ret = service_foreach_extra_data(service, service_extra_data, &passed);
+	ret = app_control_foreach_extra_data(app_control, app_control_extra_data, &passed);
 
 	for (i=0; i<NUM_EXTRA_DATA; i++)
 	{
@@ -1360,19 +1882,19 @@ static void utc_service_foreach_extra_data_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_foreach_extra_data_negative1(void)
+static void utc_app_control_foreach_extra_data_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_foreach_extra_data(service, NULL, NULL);
+	ret = app_control_foreach_extra_data(app_control, NULL, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1383,15 +1905,15 @@ static void utc_service_foreach_extra_data_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_foreach_extra_data_negative2(void)
+static void utc_app_control_foreach_extra_data_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	ret = service_foreach_extra_data(NULL, service_extra_data, NULL);
+	ret = app_control_foreach_extra_data(NULL, app_control_extra_data, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1403,7 +1925,7 @@ static void utc_service_foreach_extra_data_negative2(void)
 	}
 }
 
-static void utc_service_clone_positive(void)
+static void utc_app_control_clone_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1421,27 +1943,27 @@ static void utc_service_clone_positive(void)
 	char *package_clone;
 
 	char *extra_key = "EXTRA_KEY";
-	
+
 	char *extra_value = "EXTRA_VALUE";
 	char *extra_value_clone;
 
-	service_h service;
-	service_h service_cloned;
+	app_control_h app_control;
+	app_control_h app_control_cloned;
 
-	service_create(&service);
-	service_set_operation(service, operation);
-	service_set_uri(service, uri);
-	service_set_mime(service, mime);
-	service_set_package(service, package);
-	service_add_extra_data(service, extra_key, extra_value);
+	app_control_create(&app_control);
+	app_control_set_operation(app_control, operation);
+	app_control_set_uri(app_control, uri);
+	app_control_set_mime(app_control, mime);
+	app_control_set_package(app_control, package);
+	app_control_add_extra_data(app_control, extra_key, extra_value);
 
-	ret = service_clone(&service_cloned, service);
+	ret = app_control_clone(&app_control_cloned, app_control);
 
-	service_get_operation(service_cloned, &operation_clone);
-	service_get_uri(service_cloned, &uri_clone);
-	service_get_mime(service_cloned, &mime_clone);
-	service_get_package(service_cloned, &package_clone);
-	service_get_extra_data(service_cloned, extra_key, &extra_value_clone);
+	app_control_get_operation(app_control_cloned, &operation_clone);
+	app_control_get_uri(app_control_cloned, &uri_clone);
+	app_control_get_mime(app_control_cloned, &mime_clone);
+	app_control_get_package(app_control_cloned, &package_clone);
+	app_control_get_extra_data(app_control_cloned, extra_key, &extra_value_clone);
 
 
 	if(ret == SERVICE_ERROR_NONE
@@ -1458,18 +1980,18 @@ static void utc_service_clone_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
-	service_destroy(service_cloned);
+	app_control_destroy(app_control);
+	app_control_destroy(app_control_cloned);
 }
 
-static void utc_service_clone_negative1(void)
+static void utc_app_control_clone_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service_cloned;
+	app_control_h app_control_cloned;
 
-	ret = service_clone(&service_cloned, NULL);
+	ret = app_control_clone(&app_control_cloned, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1481,16 +2003,16 @@ static void utc_service_clone_negative1(void)
 	}
 }
 
-static void utc_service_clone_negative2(void)
+static void utc_app_control_clone_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_clone(NULL, service);
+	ret = app_control_clone(NULL, app_control);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1503,26 +2025,26 @@ static void utc_service_clone_negative2(void)
 }
 
 
-void dts_service_reply_cb(service_h request, service_h reply, service_result_e result, void *user_data)
+void dts_app_control_reply_cb(app_control_h request, app_control_h reply, app_control_result_e result, void *user_data)
 {
 
 }
 
-static void utc_service_send_launch_request_positive1(void)
+static void utc_app_control_send_launch_request_positive1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
 
-	service_set_package(service, "com.samsung.calculator");
+	app_control_set_package(app_control, "org.tizen.calculator");
 
 	// explicit launch without reply callback
-	ret = service_send_launch_request(service, NULL, NULL);
+	ret = app_control_send_launch_request(app_control, NULL, NULL);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -1533,25 +2055,25 @@ static void utc_service_send_launch_request_positive1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 
 }
 
-static void utc_service_send_launch_request_positive2(void)
+static void utc_app_control_send_launch_request_positive2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
 
-	service_set_package(service, "com.samsung.calculator");
+	app_control_set_package(app_control, "org.tizen.calculator");
 
 	// explicit launch with reply callback
-	ret = service_send_launch_request(service, dts_service_reply_cb, NULL);
+	ret = app_control_send_launch_request(app_control, dts_app_control_reply_cb, NULL);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -1562,23 +2084,23 @@ static void utc_service_send_launch_request_positive2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_send_launch_request_positive3(void)
+static void utc_app_control_send_launch_request_positive3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_operation(service, SERVICE_OPERATION_VIEW);
+	app_control_set_operation(app_control, SERVICE_OPERATION_VIEW);
 
-	service_set_mime(service, "type/custom");
+	app_control_set_mime(app_control, "type/custom");
 
-	ret = service_send_launch_request(service, dts_service_reply_cb, NULL);
+	ret = app_control_send_launch_request(app_control, dts_app_control_reply_cb, NULL);
 
 	if(ret == SERVICE_ERROR_APP_NOT_FOUND)
 	{
@@ -1589,15 +2111,15 @@ static void utc_service_send_launch_request_positive3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_send_launch_request_negative1(void)
+static void utc_app_control_send_launch_request_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	ret = service_send_launch_request(NULL, NULL, NULL);
+	ret = app_control_send_launch_request(NULL, NULL, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1609,18 +2131,18 @@ static void utc_service_send_launch_request_negative1(void)
 	}
 }
 
-static void utc_service_send_launch_request_negative2(void)
+static void utc_app_control_send_launch_request_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_operation(service, SERVICE_OPERATION_DEFAULT);
+	app_control_set_operation(app_control, SERVICE_OPERATION_DEFAULT);
 
-	ret = service_send_launch_request(service, NULL, NULL);
+	ret = app_control_send_launch_request(app_control, NULL, NULL);
 
 	if(ret == SERVICE_ERROR_APP_NOT_FOUND)
 	{
@@ -1630,20 +2152,20 @@ static void utc_service_send_launch_request_negative2(void)
 	{
 		dts_fail(API_NAME, "failed");
 	}
-	
-	service_destroy(service);
+
+	app_control_destroy(app_control);
 }
 
-static void utc_service_reply_to_launch_request_negative1(void)
+static void utc_app_control_reply_to_launch_request_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h request;
+	app_control_h request;
 
-	service_create(&request);
+	app_control_create(&request);
 
-	ret = service_reply_to_launch_request(NULL, request, SERVICE_RESULT_CANCELED);
+	ret = app_control_reply_to_launch_request(NULL, request, SERVICE_RESULT_CANCELED);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1655,16 +2177,16 @@ static void utc_service_reply_to_launch_request_negative1(void)
 	}
 }
 
-static void utc_service_reply_to_launch_request_negative2(void)
+static void utc_app_control_reply_to_launch_request_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_reply_to_launch_request(service, NULL, SERVICE_RESULT_CANCELED);
+	ret = app_control_reply_to_launch_request(app_control, NULL, SERVICE_RESULT_CANCELED);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1675,26 +2197,26 @@ static void utc_service_reply_to_launch_request_negative2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-bool dts_service_app_matched_cb(service_h service, const char *package, void *user_data)
+bool dts_app_control_app_matched_cb(app_control_h app_control, const char *package, void *user_data)
 {
 	return true;
 }
 
-static void utc_service_foreach_app_matched_positive(void)
+static void utc_app_control_foreach_app_matched_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_set_operation(service, SERVICE_OPERATION_VIEW);
+	app_control_set_operation(app_control, SERVICE_OPERATION_VIEW);
 
-	ret = service_foreach_app_matched(service, dts_service_app_matched_cb, NULL);
+	ret = app_control_foreach_app_matched(app_control, dts_app_control_app_matched_cb, NULL);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -1705,15 +2227,15 @@ static void utc_service_foreach_app_matched_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_foreach_app_matched_negative1(void)
+static void utc_app_control_foreach_app_matched_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	ret = service_foreach_app_matched(NULL, dts_service_app_matched_cb, NULL);
+	ret = app_control_foreach_app_matched(NULL, dts_app_control_app_matched_cb, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1725,16 +2247,16 @@ static void utc_service_foreach_app_matched_negative1(void)
 	}
 }
 
-static void utc_service_foreach_app_matched_negative2(void)
+static void utc_app_control_foreach_app_matched_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_foreach_app_matched(service, NULL, NULL);
+	ret = app_control_foreach_app_matched(app_control, NULL, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1745,10 +2267,10 @@ static void utc_service_foreach_app_matched_negative2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_add_extra_data_array_positive(void)
+static void utc_app_control_add_extra_data_array_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1757,11 +2279,11 @@ static void utc_service_add_extra_data_array_positive(void)
 	const char* array_value[] = {"array_value1", "array_value2", "array_value3", "array_value4"};
 	int array_length = 4;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_add_extra_data_array(service, array_key, array_value, array_length);
+	ret = app_control_add_extra_data_array(app_control, array_key, array_value, array_length);
 
 	if(ret == SERVICE_ERROR_NONE)
 	{
@@ -1772,21 +2294,21 @@ static void utc_service_add_extra_data_array_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_add_extra_data_array_negative1(void)
+static void utc_app_control_add_extra_data_array_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	const char* array_value[] = {"array_value1", "array_value2", "array_value3", "array_value4"};
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_add_extra_data_array(service, NULL, array_value, 4);
+	ret = app_control_add_extra_data_array(app_control, NULL, array_value, 4);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1797,22 +2319,22 @@ static void utc_service_add_extra_data_array_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
 
-static void utc_service_add_extra_data_array_negative2(void)
+static void utc_app_control_add_extra_data_array_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	const char *array_key = "array_key";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_add_extra_data_array(service, array_key, NULL, 4);
+	ret = app_control_add_extra_data_array(app_control, array_key, NULL, 4);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1823,10 +2345,10 @@ static void utc_service_add_extra_data_array_negative2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_add_extra_data_array_negative3(void)
+static void utc_app_control_add_extra_data_array_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1834,11 +2356,11 @@ static void utc_service_add_extra_data_array_negative3(void)
 	const char *array_key = "array_key";
 	const char* array_value[] = {"array_value1", "array_value2", "array_value3", "array_value4"};
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_add_extra_data_array(service, array_key, array_value, -1);
+	ret = app_control_add_extra_data_array(app_control, array_key, array_value, -1);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1849,10 +2371,10 @@ static void utc_service_add_extra_data_array_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_array_positive(void)
+static void utc_app_control_get_extra_data_array_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1864,13 +2386,13 @@ static void utc_service_get_extra_data_array_positive(void)
 	char** array_value_out;
 	int array_length_out;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data_array(service, array_key, array_value, array_length);
+	app_control_add_extra_data_array(app_control, array_key, array_value, array_length);
 
-	ret = service_get_extra_data_array(service, array_key, &array_value_out, &array_length_out);
+	ret = app_control_get_extra_data_array(app_control, array_key, &array_value_out, &array_length_out);
 
 	if(ret == SERVICE_ERROR_NONE && array_length_out == array_length)
 	{
@@ -1881,10 +2403,10 @@ static void utc_service_get_extra_data_array_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_array_negative1(void)
+static void utc_app_control_get_extra_data_array_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1893,11 +2415,11 @@ static void utc_service_get_extra_data_array_negative1(void)
 	char** array_value_out;
 	int array_length_out;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_extra_data_array(service, array_key, &array_value_out, &array_length_out);
+	ret = app_control_get_extra_data_array(app_control, array_key, &array_value_out, &array_length_out);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1908,10 +2430,10 @@ static void utc_service_get_extra_data_array_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_array_negative2(void)
+static void utc_app_control_get_extra_data_array_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1922,13 +2444,13 @@ static void utc_service_get_extra_data_array_negative2(void)
 	char** array_value_out;
 	int array_length_out;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data_array(service, array_key, array_value, array_length);
+	app_control_add_extra_data_array(app_control, array_key, array_value, array_length);
 
-	ret = service_get_extra_data_array(NULL, array_key, &array_value_out, &array_length_out);
+	ret = app_control_get_extra_data_array(NULL, array_key, &array_value_out, &array_length_out);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1939,10 +2461,10 @@ static void utc_service_get_extra_data_array_negative2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_array_negative3(void)
+static void utc_app_control_get_extra_data_array_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1953,13 +2475,13 @@ static void utc_service_get_extra_data_array_negative3(void)
 	char** array_value_out;
 	int array_length_out;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data_array(service, array_key, array_value, array_length);
+	app_control_add_extra_data_array(app_control, array_key, array_value, array_length);
 
-	ret = service_get_extra_data_array(service, NULL, &array_value_out, &array_length_out);
+	ret = app_control_get_extra_data_array(app_control, NULL, &array_value_out, &array_length_out);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -1970,10 +2492,10 @@ static void utc_service_get_extra_data_array_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_array_negative4(void)
+static void utc_app_control_get_extra_data_array_negative4(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -1983,13 +2505,13 @@ static void utc_service_get_extra_data_array_negative4(void)
 	int array_length = 4;
 	int array_length_out;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data_array(service, array_key, array_value, array_length);
+	app_control_add_extra_data_array(app_control, array_key, array_value, array_length);
 
-	ret = service_get_extra_data_array(service, array_key, NULL, &array_length_out);
+	ret = app_control_get_extra_data_array(app_control, array_key, NULL, &array_length_out);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2000,10 +2522,10 @@ static void utc_service_get_extra_data_array_negative4(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_get_extra_data_array_negative5(void)
+static void utc_app_control_get_extra_data_array_negative5(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -2013,13 +2535,13 @@ static void utc_service_get_extra_data_array_negative5(void)
 	int array_length = 4;
 	char** array_value_out;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data_array(service, array_key, array_value, array_length);
+	app_control_add_extra_data_array(app_control, array_key, array_value, array_length);
 
-	ret = service_get_extra_data_array(service, array_key, &array_value_out, NULL);
+	ret = app_control_get_extra_data_array(app_control, array_key, &array_value_out, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2032,7 +2554,7 @@ static void utc_service_get_extra_data_array_negative5(void)
 
 }
 
-static void utc_service_is_extra_data_array_positive(void)
+static void utc_app_control_is_extra_data_array_positive(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -2042,13 +2564,13 @@ static void utc_service_is_extra_data_array_positive(void)
 	int array_length = 4;
 	bool is_array;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	service_add_extra_data_array(service, array_key, array_value, array_length);
+	app_control_add_extra_data_array(app_control, array_key, array_value, array_length);
 
-	ret = service_is_extra_data_array(service, array_key, &is_array);
+	ret = app_control_is_extra_data_array(app_control, array_key, &is_array);
 
 	if(ret == SERVICE_ERROR_NONE && is_array == true)
 	{
@@ -2059,10 +2581,10 @@ static void utc_service_is_extra_data_array_positive(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_is_extra_data_array_negative1(void)
+static void utc_app_control_is_extra_data_array_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -2071,11 +2593,11 @@ static void utc_service_is_extra_data_array_negative1(void)
 
 	bool is_array;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_is_extra_data_array(service, key, &is_array);
+	ret = app_control_is_extra_data_array(app_control, key, &is_array);
 
 	if(ret == SERVICE_ERROR_NONE && is_array == false)
 	{
@@ -2086,10 +2608,10 @@ static void utc_service_is_extra_data_array_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_is_extra_data_array_negative2(void)
+static void utc_app_control_is_extra_data_array_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
@@ -2098,11 +2620,11 @@ static void utc_service_is_extra_data_array_negative2(void)
 
 	bool is_array;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_is_extra_data_array(NULL, key, &is_array);
+	ret = app_control_is_extra_data_array(NULL, key, &is_array);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2113,21 +2635,21 @@ static void utc_service_is_extra_data_array_negative2(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_is_extra_data_array_negative3(void)
+static void utc_app_control_is_extra_data_array_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	bool is_array;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_is_extra_data_array(service, NULL, &is_array);
+	ret = app_control_is_extra_data_array(app_control, NULL, &is_array);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2138,21 +2660,21 @@ static void utc_service_is_extra_data_array_negative3(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
-static void utc_service_is_extra_data_array_negative4(void)
+static void utc_app_control_is_extra_data_array_negative4(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	const char *key = "key";
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_is_extra_data_array(service, key, NULL);
+	ret = app_control_is_extra_data_array(app_control, key, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2163,21 +2685,21 @@ static void utc_service_is_extra_data_array_negative4(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
 
-static void utc_service_is_reply_requested_positive1(void)
+static void utc_app_control_is_reply_requested_positive1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 	bool requested;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_is_reply_requested(service, &requested);
+	ret = app_control_is_reply_requested(app_control, &requested);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2188,20 +2710,20 @@ static void utc_service_is_reply_requested_positive1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
 
-static void utc_service_is_reply_requested_negative1(void)
+static void utc_app_control_is_reply_requested_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_is_reply_requested(service, NULL);
+	ret = app_control_is_reply_requested(app_control, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2212,18 +2734,18 @@ static void utc_service_is_reply_requested_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
 
-static void utc_service_is_reply_requested_negative2(void)
+static void utc_app_control_is_reply_requested_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	bool requsted = false;
 
-	ret = service_is_reply_requested(NULL, &requsted);
+	ret = app_control_is_reply_requested(NULL, &requsted);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2235,12 +2757,12 @@ static void utc_service_is_reply_requested_negative2(void)
 	}
 }
 
-static void utc_service_is_reply_requested_negative3(void)
+static void utc_app_control_is_reply_requested_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	ret = service_is_reply_requested(NULL, NULL);
+	ret = app_control_is_reply_requested(NULL, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2253,17 +2775,17 @@ static void utc_service_is_reply_requested_negative3(void)
 }
 
 
-static void utc_service_get_caller_positive1(void)
+static void utc_app_control_get_caller_positive1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 	char *caller;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_caller(service, &caller);
+	ret = app_control_get_caller(app_control, &caller);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2274,20 +2796,20 @@ static void utc_service_get_caller_positive1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
 
-static void utc_service_get_caller_negative1(void)
+static void utc_app_control_get_caller_negative1(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	service_h service;
+	app_control_h app_control;
 
-	service_create(&service);
+	app_control_create(&app_control);
 
-	ret = service_get_caller(service, NULL);
+	ret = app_control_get_caller(app_control, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2298,18 +2820,18 @@ static void utc_service_get_caller_negative1(void)
 		dts_fail(API_NAME, "failed");
 	}
 
-	service_destroy(service);
+	app_control_destroy(app_control);
 }
 
 
-static void utc_service_get_caller_negative2(void)
+static void utc_app_control_get_caller_negative2(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
 	char *caller = NULL;
 
-	ret = service_get_caller(NULL, &caller);
+	ret = app_control_get_caller(NULL, &caller);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2321,12 +2843,12 @@ static void utc_service_get_caller_negative2(void)
 	}
 }
 
-static void utc_service_get_caller_negative3(void)
+static void utc_app_control_get_caller_negative3(void)
 {
 	const char *API_NAME = __FUNCTION__;
 	int ret = SERVICE_ERROR_NONE;
 
-	ret = service_get_caller(NULL, NULL);
+	ret = app_control_get_caller(NULL, NULL);
 
 	if(ret != SERVICE_ERROR_NONE)
 	{
@@ -2338,3 +2860,89 @@ static void utc_service_get_caller_negative3(void)
 	}
 }
 
+static void utc_app_control_to_bundle_positive1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+	app_control_h app_control;
+	bundle *data;
+	const char *input_value = "INPUT_VALUE";
+
+	app_control_create(&app_control);
+
+	ret = app_control_set_package(app_control, input_value);
+
+	ret = app_control_to_bundle(app_control, &data);
+
+	if(ret == SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+
+static void utc_app_control_to_bundle_negative1(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	app_control_h app_control;
+
+	app_control_create(&app_control);
+
+	ret = app_control_to_bundle(app_control, NULL);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+
+	app_control_destroy(app_control);
+}
+
+
+static void utc_app_control_to_bundle_negative2(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	bundle *data = NULL;
+
+	ret = app_control_to_bundle(NULL, &data);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}
+
+static void utc_app_control_to_bundle_negative3(void)
+{
+	const char *API_NAME = __FUNCTION__;
+	int ret = SERVICE_ERROR_NONE;
+
+	ret = app_control_to_bundle(NULL, NULL);
+
+	if(ret != SERVICE_ERROR_NONE)
+	{
+		dts_pass(API_NAME, "passed");
+	}
+	else
+	{
+		dts_fail(API_NAME, "failed");
+	}
+}

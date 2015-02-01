@@ -11,26 +11,18 @@
  * distributed under the License is distributed on an AS IS BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
-#include <bundle.h>
-#include <appcore-common.h>
 #include <aul.h>
 #include <ail.h>
-#include <dlog.h>
 
-#include <app_private.h>
-#include <app_service_private.h>
+#include <app_internal.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -115,7 +107,7 @@ static int app_get_appinfo(const char *package, const char *property, char **val
 	{
 		return app_error(APP_ERROR_INVALID_CONTEXT, __FUNCTION__, "failed to get app-info");
 	}
-	
+
 	if (ail_appinfo_get_str(appinfo, property, &appinfo_value) != 0)
 	{
 		ail_destroy_appinfo(appinfo);
@@ -132,7 +124,7 @@ static int app_get_appinfo(const char *package, const char *property, char **val
 	}
 
 	*value = appinfo_value_dup;
-	
+
 	return APP_ERROR_NONE;
 }
 
@@ -183,6 +175,6 @@ int app_get_version(char **version)
 		free(package);
 	}
 
-	return retval;	
+	return retval;
 }
 

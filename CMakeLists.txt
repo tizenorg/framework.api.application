@@ -9,8 +9,8 @@ SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 SET(INC_DIR include)
 INCLUDE_DIRECTORIES(${INC_DIR})
 
-SET(requires "dlog bundle appcore-common appcore-efl aul ail appsvc notification elementary capi-base-common alarm-service sqlite3")
-SET(pc_requires "capi-base-common")
+SET(requires "dlog bundle appcore-common appcore-efl aul elementary capi-base-common vconf-internal-keys")
+SET(pc_requires "capi-base-common capi-appfw-app-control capi-appfw-app-common")
 
 INCLUDE(FindPkgConfig)
 pkg_check_modules(${fw_name} REQUIRED ${requires})
@@ -28,12 +28,21 @@ ENDIF("${ARCH}" STREQUAL "arm")
 ADD_DEFINITIONS("-DPREFIX=\"${CMAKE_INSTALL_PREFIX}\"")
 ADD_DEFINITIONS("-DSLP_DEBUG")
 
-SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=/usr/lib")
+IF(_APPFW_FEATURE_PROCESS_POOL)
+	ADD_DEFINITIONS("-D_APPFW_FEATURE_PROCESS_POOL")
+ENDIF(_APPFW_FEATURE_PROCESS_POOL)
+
+SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=/usr/lib -Wl,--no-undefined")
 
 aux_source_directory(src SOURCES)
 ADD_LIBRARY(${fw_name} SHARED ${SOURCES})
 
-TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS})
+ADD_SUBDIRECTORY(app_control)
+ADD_SUBDIRECTORY(app_common)
+ADD_SUBDIRECTORY(alarm)
+ADD_SUBDIRECTORY(preference)
+
+TARGET_LINK_LIBRARIES(${fw_name} capi-appfw-app-control capi-appfw-app-common ${${fw_name}_LDFLAGS})
 
 SET_TARGET_PROPERTIES(${fw_name}
      PROPERTIES
@@ -55,7 +64,7 @@ SET(PC_REQUIRED ${pc_requires})
 SET(PC_LDFLAGS -l${fw_name})
 
 CONFIGURE_FILE(
-    capi-appfw-application.pc.in
+    capi-appfw-module.pc.in
     ${CMAKE_CURRENT_SOURCE_DIR}/${fw_name}.pc
     @ONLY
 )

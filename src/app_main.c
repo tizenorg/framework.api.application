@@ -42,6 +42,7 @@ typedef enum {
 	APP_STATE_RUNNING, // The application is running in the foreground and background
 } app_state_e;
 
+
 typedef struct {
 	char *package;
 	char *app_name;
@@ -66,6 +67,7 @@ static int app_appcore_region_changed(void *event, void *data);
 
 static void app_set_appcore_event_cb(app_context_h app_context);
 static void app_unset_appcore_event_cb(void);
+
 
 int app_main(int argc, char **argv, app_event_callback_s *callback, void *user_data)
 {
@@ -138,7 +140,6 @@ void app_efl_exit(void)
 	LOGI("app_efl_exit");
 	elm_exit();
 }
-
 
 int app_appcore_create(void *data)
 {
@@ -231,7 +232,6 @@ int app_appcore_resume(void *data)
 
 	return APP_ERROR_NONE;
 }
-
 
 int app_appcore_reset(bundle *appcore_bundle, void *data)
 {
@@ -412,7 +412,7 @@ void app_unset_appcore_event_cb(void)
 	appcore_set_event_callback(APPCORE_EVENT_REGION_CHANGE, NULL, NULL);
 }
 
-#define UI_APP_EVENT_MAX 5
+#define UI_APP_EVENT_MAX 6
 static Eina_List *handler_list[UI_APP_EVENT_MAX] = {NULL, };
 static int handler_initialized = 0;
 static int appcore_initialized = 0;
@@ -432,7 +432,8 @@ static void _free_handler_list(void)
 
 	for (i = 0; i < UI_APP_EVENT_MAX; i++) {
 		EINA_LIST_FREE(handler_list[i], handler)
-			free(handler);
+			if (handler)
+				free(handler);
 	}
 
 	eina_shutdown();
@@ -533,25 +534,105 @@ static int _ui_app_appcore_region_changed(void *event_info, void *data)
 	return APP_ERROR_NONE;
 }
 
+static int _ui_app_appcore_suspended_state_changed(void *event_info, void *data)
+{
+	Eina_List *l;
+	app_event_handler_h handler;
+	struct app_event_info event;
+
+	LOGI("_ui_app_appcore_suspended_state_changed");
+	LOGI("[__SUSPEND__] suspended state: %d (0: suspend, 1: wake)", *(int*)event_info);
+
+	event.type = APP_EVENT_SUSPENDED_STATE_CHANGED;
+	event.value = event_info;
+
+	EINA_LIST_FOREACH(handler_list[APP_EVENT_SUSPENDED_STATE_CHANGED], l, handler) {
+		handler->cb(&event, handler->data);
+	}
+
+	return APP_ERROR_NONE;
+}
+
+static void _ui_app_appcore_set_event_cb(app_event_type_e event_type)
+{
+	switch (event_type) {
+	case APP_EVENT_LOW_MEMORY:
+		appcore_set_event_callback(APPCORE_EVENT_LOW_MEMORY, _ui_app_appcore_low_memory, NULL);
+		break;
+	case APP_EVENT_LOW_BATTERY:
+		appcore_set_event_callback(APPCORE_EVENT_LOW_BATTERY, _ui_app_appcore_low_battery, NULL);
+		break;
+	case APP_EVENT_LANGUAGE_CHANGED:
+		appcore_set_event_callback(APPCORE_EVENT_LANG_CHANGE, _ui_app_appcore_lang_changed, NULL);
+		break;
+	case APP_EVENT_DEVICE_ORIENTATION_CHANGED:
+		appcore_set_rotation_cb(_ui_app_appcore_rotation_event, NULL);
+		break;
+	case APP_EVENT_REGION_FORMAT_CHANGED:
+		appcore_set_event_callback(APPCORE_EVENT_REGION_CHANGE, _ui_app_appcore_region_changed, NULL);
+		break;
+	case APP_EVENT_SUSPENDED_STATE_CHANGED:
+		LOGI("[__SUSPEND__]");
+		appcore_set_event_callback(APPCORE_EVENT_SUSPENDED_STATE_CHANGE, _ui_app_appcore_suspended_state_changed, NULL);
+		break;
+	default:
+		break;
+	}
+}
+
+static void _ui_app_appcore_unset_event_cb(app_event_type_e event_type)
+{
+	switch (event_type) {
+	case APP_EVENT_LOW_MEMORY:
+		appcore_set_event_callback(APPCORE_EVENT_LOW_MEMORY, NULL, NULL);
+		break;
+	case APP_EVENT_LOW_BATTERY:
+		appcore_set_event_callback(APPCORE_EVENT_LOW_BATTERY, NULL, NULL);
+		break;
+	case APP_EVENT_LANGUAGE_CHANGED:
+		appcore_set_event_callback(APPCORE_EVENT_LANG_CHANGE, NULL, NULL);
+		break;
+	case APP_EVENT_DEVICE_ORIENTATION_CHANGED:
+		appcore_unset_rotation_cb();
+		break;
+	case APP_EVENT_REGION_FORMAT_CHANGED:
+		appcore_set_event_callback(APPCORE_EVENT_REGION_CHANGE, NULL, NULL);
+		break;
+	case APP_EVENT_SUSPENDED_STATE_CHANGED:
+		LOGI("[__SUSPEND__]");
+		appcore_set_event_callback(APPCORE_EVENT_SUSPENDED_STATE_CHANGE, NULL, NULL);
+		break;
+	default:
+		break;
+	}
+}
 
 static void _ui_app_set_appcore_event_cb(void)
 {
-	appcore_set_event_callback(APPCORE_EVENT_LOW_MEMORY, _ui_app_appcore_low_memory, NULL);
-	appcore_set_event_callback(APPCORE_EVENT_LOW_BATTERY, _ui_app_appcore_low_battery, NULL);
+	_ui_app_appcore_set_event_cb(APP_EVENT_LOW_MEMORY);
+	_ui_app_appcore_set_event_cb(APP_EVENT_LANGUAGE_CHANGED);
+	_ui_app_appcore_set_event_cb(APP_EVENT_REGION_FORMAT_CHANGED);
+
+	if (eina_list_count(handler_list[APP_EVENT_LOW_BATTERY]) > 0)
+		_ui_app_appcore_set_event_cb(APP_EVENT_LOW_BATTERY);
 	if (eina_list_count(handler_list[APP_EVENT_DEVICE_ORIENTATION_CHANGED]) > 0)
-		appcore_set_rotation_cb(_ui_app_appcore_rotation_event, NULL);
-	appcore_set_event_callback(APPCORE_EVENT_LANG_CHANGE, _ui_app_appcore_lang_changed, NULL);
-	appcore_set_event_callback(APPCORE_EVENT_REGION_CHANGE, _ui_app_appcore_region_changed, NULL);
+		_ui_app_appcore_set_event_cb(APP_EVENT_DEVICE_ORIENTATION_CHANGED);
+	if (eina_list_count(handler_list[APP_EVENT_SUSPENDED_STATE_CHANGED]) > 0)
+		_ui_app_appcore_set_event_cb(APP_EVENT_SUSPENDED_STATE_CHANGED);
 }
 
 static void _ui_app_unset_appcore_event_cb(void)
 {
-	appcore_set_event_callback(APPCORE_EVENT_LOW_MEMORY, NULL, NULL);
-	appcore_set_event_callback(APPCORE_EVENT_LOW_BATTERY, NULL, NULL);
+	_ui_app_appcore_unset_event_cb(APP_EVENT_LOW_MEMORY);
+	_ui_app_appcore_unset_event_cb(APP_EVENT_LANGUAGE_CHANGED);
+	_ui_app_appcore_unset_event_cb(APP_EVENT_REGION_FORMAT_CHANGED);
+
+	if (eina_list_count(handler_list[APP_EVENT_LOW_BATTERY]) > 0)
+		_ui_app_appcore_unset_event_cb(APP_EVENT_LOW_BATTERY);
 	if (eina_list_count(handler_list[APP_EVENT_DEVICE_ORIENTATION_CHANGED]) > 0)
-		appcore_unset_rotation_cb();
-	appcore_set_event_callback(APPCORE_EVENT_LANG_CHANGE, NULL, NULL);
-	appcore_set_event_callback(APPCORE_EVENT_REGION_CHANGE, NULL, NULL);
+		_ui_app_appcore_unset_event_cb(APP_EVENT_DEVICE_ORIENTATION_CHANGED);
+	if (eina_list_count(handler_list[APP_EVENT_SUSPENDED_STATE_CHANGED]) > 0)
+		_ui_app_appcore_unset_event_cb(APP_EVENT_SUSPENDED_STATE_CHANGED);
 }
 
 static int _ui_app_appcore_create(void *data)
@@ -636,7 +717,6 @@ static int _ui_app_appcore_resume(void *data)
 	return APP_ERROR_NONE;
 }
 
-
 static int _ui_app_appcore_reset(bundle *appcore_bundle, void *data)
 {
 	LOGI("app_appcore_reset");
@@ -647,8 +727,15 @@ static int _ui_app_appcore_reset(bundle *appcore_bundle, void *data)
 	if (app_context == NULL)
 		return app_error(APP_ERROR_INVALID_CONTEXT, __FUNCTION__, NULL);
 
-	if (app_control_create_event(appcore_bundle, &app_control) != APP_ERROR_NONE)
-		return app_error(APP_ERROR_INVALID_PARAMETER, __FUNCTION__, "failed to create a app_control handle from the bundle");
+	if (appcore_bundle) {
+		if (app_control_create_event(appcore_bundle, &app_control) != APP_ERROR_NONE)
+			return app_error(APP_ERROR_INVALID_PARAMETER, __FUNCTION__, "failed to create a app_control handle from the bundle");
+	} else {
+		int ret;
+		ret = app_control_create(&app_control);
+		if (ret != APP_ERROR_NONE)
+			return app_error(APP_ERROR_OUT_OF_MEMORY, __FUNCTION__, "failed to create a app_control");
+	}
 
 	callback = app_context->callback->app_control;
 
@@ -709,7 +796,8 @@ int ui_app_main(int argc, char **argv, ui_app_lifecycle_callback_s *callback, vo
 
 void ui_app_exit(void)
 {
-	app_efl_exit();
+	LOGI("ui_app_exit");
+	elm_exit();
 }
 
 int ui_app_add_event_handler(app_event_handler_h *event_handler, app_event_type_e event_type, app_event_cb callback, void *user_data)
@@ -725,7 +813,7 @@ int ui_app_add_event_handler(app_event_handler_h *event_handler, app_event_type_
 	if (event_handler == NULL || callback == NULL)
 		return app_error(APP_ERROR_INVALID_PARAMETER, __FUNCTION__, "null parameter");
 
-	if (event_type < APP_EVENT_LOW_MEMORY || event_type > APP_EVENT_REGION_FORMAT_CHANGED)
+	if (event_type < APP_EVENT_LOW_MEMORY || event_type > APP_EVENT_SUSPENDED_STATE_CHANGED)
 		return app_error(APP_ERROR_INVALID_PARAMETER, __FUNCTION__, "invalid event type");
 
 	EINA_LIST_FOREACH(handler_list[event_type], l_itr, handler) {
@@ -735,15 +823,14 @@ int ui_app_add_event_handler(app_event_handler_h *event_handler, app_event_type_
 
 	handler = calloc(1, sizeof(struct app_event_handler));
 	if (!handler)
-		return app_error(APP_ERROR_OUT_OF_MEMORY, __FUNCTION__, "failed to create handler");
+		return app_error(APP_ERROR_OUT_OF_MEMORY, __FUNCTION__, "insufficient memory");
 
 	handler->type = event_type;
 	handler->cb = callback;
 	handler->data = user_data;
 
-	if (appcore_initialized && event_type == APP_EVENT_DEVICE_ORIENTATION_CHANGED
-		&& eina_list_count(handler_list[event_type]) == 0)
-		appcore_set_rotation_cb(_ui_app_appcore_rotation_event, NULL);
+	if (appcore_initialized && eina_list_count(handler_list[event_type]) == 0)
+		_ui_app_appcore_set_event_cb(event_type);
 
 	handler_list[event_type] = eina_list_append(handler_list[event_type], handler);
 
@@ -768,7 +855,7 @@ int ui_app_remove_event_handler(app_event_handler_h event_handler)
 	}
 
 	type = event_handler->type;
-	if (type < APP_EVENT_LOW_MEMORY || type > APP_EVENT_REGION_FORMAT_CHANGED)
+	if (type < APP_EVENT_LOW_MEMORY || type > APP_EVENT_SUSPENDED_STATE_CHANGED)
 		return app_error(APP_ERROR_INVALID_PARAMETER, __FUNCTION__, "invalid handler");
 
 	EINA_LIST_FOREACH_SAFE(handler_list[type], l_itr, l_next, handler) {
@@ -776,9 +863,8 @@ int ui_app_remove_event_handler(app_event_handler_h event_handler)
 			free(handler);
 			handler_list[type] = eina_list_remove_list(handler_list[type], l_itr);
 
-			if (appcore_initialized && type == APP_EVENT_DEVICE_ORIENTATION_CHANGED
-				&& eina_list_count(handler_list[type]) == 0)
-				appcore_unset_rotation_cb();
+			if (appcore_initialized && eina_list_count(handler_list[type]) == 0)
+				_ui_app_appcore_unset_event_cb(type);
 
 			return APP_ERROR_NONE;
 		}

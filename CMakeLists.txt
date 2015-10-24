@@ -9,8 +9,8 @@ SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 SET(INC_DIR include)
 INCLUDE_DIRECTORIES(${INC_DIR})
 
-SET(requires "dlog bundle appcore-common appcore-efl aul elementary capi-base-common vconf-internal-keys")
-SET(pc_requires "capi-base-common capi-appfw-app-control capi-appfw-app-common")
+SET(requires "dlog bundle appcore-common appcore-efl aul elementary capi-base-common vconf-internal-keys pkgmgr-info glib-2.0")
+SET(pc_requires "capi-base-common capi-appfw-app-control capi-appfw-app-common capi-appfw-event appcore-common")
 
 INCLUDE(FindPkgConfig)
 pkg_check_modules(${fw_name} REQUIRED ${requires})
@@ -41,8 +41,9 @@ ADD_SUBDIRECTORY(app_control)
 ADD_SUBDIRECTORY(app_common)
 ADD_SUBDIRECTORY(alarm)
 ADD_SUBDIRECTORY(preference)
+ADD_SUBDIRECTORY(event)
 
-TARGET_LINK_LIBRARIES(${fw_name} capi-appfw-app-control capi-appfw-app-common ${${fw_name}_LDFLAGS})
+TARGET_LINK_LIBRARIES(${fw_name} capi-appfw-app-control capi-appfw-app-common capi-appfw-event ${${fw_name}_LDFLAGS})
 
 SET_TARGET_PROPERTIES(${fw_name}
      PROPERTIES

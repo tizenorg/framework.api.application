@@ -11,20 +11,21 @@ BuildRequires:  pkgconfig(bundle)
 BuildRequires:  pkgconfig(appcore-common)
 BuildRequires:  pkgconfig(appcore-efl)
 BuildRequires:  pkgconfig(aul)
-BuildRequires:  pkgconfig(ail)
 BuildRequires:  pkgconfig(appsvc)
 BuildRequires:  pkgconfig(elementary)
 BuildRequires:  pkgconfig(alarm-service)
 BuildRequires:  pkgconfig(capi-base-common)
 BuildRequires:  pkgconfig(sqlite3)
-BuildRequires:  pkgconfig(capi-security-privilege-manager)
+BuildRequires:  pkgconfig(security-privilege-checker)
 BuildRequires:  pkgconfig(pkgmgr-info)
 BuildRequires:  pkgconfig(vconf-internal-keys)
+BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(eventsystem)
 
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
-%define feature_appfw_process_pool 1
+%define appfw_feature_process_pool 1
 
 %description
 An Application library in SLP C API
@@ -41,7 +42,7 @@ An Application library in SLP C API (DEV)
 %setup -q
 
 %build
-%if 0%{?feature_appfw_process_pool}
+%if 0%{?appfw_feature_process_pool}
  _APPFW_FEATURE_PROCESS_POOL=ON
 %endif
 
@@ -68,6 +69,7 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 %{_libdir}/libcapi-appfw-app-common.so.*
 %{_libdir}/libcapi-appfw-alarm.so.*
 %{_libdir}/libcapi-appfw-preference.so.*
+%{_libdir}/libcapi-appfw-event.so.*
 %manifest capi-appfw-application.manifest
 /usr/share/license/%{name}
 
@@ -79,4 +81,5 @@ cp LICENSE %{buildroot}/usr/share/license/%{name}
 %{_libdir}/libcapi-appfw-app-common.so
 %{_libdir}/libcapi-appfw-alarm.so
 %{_libdir}/libcapi-appfw-preference.so
+%{_libdir}/libcapi-appfw-event.so
 

@@ -18,10 +18,7 @@
 #include <appcore-efl.h>
 #include <aul.h>
 
-void app_set_reclaiming_system_cache_on_pause(bool enable)
-{
-	appcore_set_system_resource_reclaiming(enable);
-}
+#include "app_extension.h"
 
 //#ifdef _APPFW_FEATURE_PROCESS_POOL
 void* app_get_preinitialized_window(const char *win_name)

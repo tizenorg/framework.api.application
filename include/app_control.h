@@ -35,7 +35,7 @@ extern "C" {
 
 
 typedef struct _bundle_t bundle;
-
+typedef unsigned char bundle_raw;
 
 /**
  * @brief App Control handle.
@@ -60,66 +60,91 @@ typedef enum
 	APP_CONTROL_ERROR_LAUNCH_REJECTED = TIZEN_ERROR_APPLICATION | 0x23, /**< The application cannot be launched now*/
 	APP_CONTROL_ERROR_PERMISSION_DENIED = TIZEN_ERROR_PERMISSION_DENIED,	/**< Permission denied */
 	APP_CONTROL_ERROR_LAUNCH_FAILED = TIZEN_ERROR_APPLICATION | 0x24, /**< Internal launch error */
-	APP_CONTROL_ERROR_TIMED_OUT = TIZEN_ERROR_TIMED_OUT /**< Time out */
+	APP_CONTROL_ERROR_TIMED_OUT = TIZEN_ERROR_TIMED_OUT, /**< Time out */
+	APP_CONTROL_ERROR_IO_ERROR = TIZEN_ERROR_IO_ERROR	/**< IO error */
 } app_control_error_e;
 
 
 /**
  * @brief Enumeration for App Control Result.
+ * @see app_control_enable_app_started_result_event()
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 typedef enum
 {
+	APP_CONTROL_RESULT_APP_STARTED = 1, /**< Callee application launched actually (Since 2.4) */
 	APP_CONTROL_RESULT_SUCCEEDED = 0, /**< Operation succeeded */
 	APP_CONTROL_RESULT_FAILED = -1, /**< Operation failed by the callee */
-	APP_CONTROL_RESULT_CANCELED = -2, /**< Operation canceled by the framework */
+	APP_CONTROL_RESULT_CANCELED = -2, /**< Operation canceled by the platform */
 } app_control_result_e;
 
+/**
+ * @brief Enumeration for App Control Launch Mode.
+ * @since_tizen 2.4
+ */
+typedef enum {
+	APP_CONTROL_LAUNCH_MODE_SINGLE = 0, /**< Prefer to launch an application as single mode */
+	APP_CONTROL_LAUNCH_MODE_GROUP, /**< Prefer to launch an application as group mode */
+} app_control_launch_mode_e;
 
 /**
- * @brief Definition for the app_control operation: main operation for an explicit launch.
+ * @brief Definition for the app_control operation: An explicit launch for a homescreen application.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_MAIN "http://tizen.org/appcontrol/operation/main"
 
 
 /**
- * @brief Definition for the app_control operation: default operation for an explicit launch.
+ * @brief Definition for the app_control operation: An explicit launch for an application that excludes a homescreen application.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_DEFAULT "http://tizen.org/appcontrol/operation/default"
 
 
 /**
- * @brief Definition for the app_control operation: provides an explicit editable access to the given data.
+ * @brief Definition for the app_control operation: Provides an editable access to the given data.
+ * @details Input: It depends on application scenario/configuration.\n
+ *	    Output: It depends on application scenario/configuration.\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_EDIT "http://tizen.org/appcontrol/operation/edit"
 
 
 /**
- * @brief Definition for the app_control operation: displays the data.
+ * @brief Definition for the app_control operation: Displays the data.
+ * @details Input: URI is usually used to inform the path to show. In some cases, some other data in Extra can be used (e.g., VIEW operation for viewing Contact, Calendar data).\n
+ *	    Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_VIEW "http://tizen.org/appcontrol/operation/view"
 
 
 /**
- * @brief Definition for the app_control operation: picks an item from the data, returning what is selected.
+ * @brief Definition for the app_control operation: Picks items.
+ * @details Input: It depends on application scenario/configuration.\n
+ *	    Output: APP_CONTROL_DATA_SELECTED in Extra\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_PICK "http://tizen.org/appcontrol/operation/pick"
 
 
 /**
- * @brief Definition for the app_control operation: creates content, returning what is created.
+ * @brief Definition for the app_control operation: Creates contents.
+ * @details Input: It depends on application scenario/configuration.\n
+ *	    Output: APP_CONTROL_DATA_SELECTED in Extra\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_CREATE_CONTENT "http://tizen.org/appcontrol/operation/create_content"
 
 
 /**
- * @brief Definition for the app_control operation: performs a call to someone specified by the data.
+ * @brief Definition for the app_control operation: Performs a call to someone.
+ * @details Input: URI is the number to be dialed. This is mandatory field.\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  * @privlevel public
  * @privilege %http://tizen.org/privilege/call
@@ -129,135 +154,314 @@ typedef enum
 
 
 /**
- * @brief Definition for the app_control operation: delivers some data to someone else.
+ * @brief Definition for the app_control operation: Delivers some data to someone else.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ * @deprecated Deprecated since 2.4. Use #APP_CONTROL_OPERATION_SHARE instead.
  */
 #define APP_CONTROL_OPERATION_SEND "http://tizen.org/appcontrol/operation/send"
 
 
 /**
- * @brief Definition for the app_control operation: delivers text data to someone else.
+ * @brief Definition for the app_control operation: Delivers text data to someone else.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ * @deprecated Deprecated since 2.4. Use #APP_CONTROL_OPERATION_SHARE_TEXT instead.
  */
 #define APP_CONTROL_OPERATION_SEND_TEXT "http://tizen.org/appcontrol/operation/send_text"
 
 
 /**
- * @brief Definition for the app_control operation: shares an item with someone else.
+ * @brief Definition for the app_control operation: Shares an item with someone else.
+ * @details Input: URI is usually used to inform the path to share. In some cases, some other data in Extra can be used (e.g., SHARE operation for sharing Contact data, SHARE operation for sharing an item through Message, Email applications).\n
+ *	    Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_SHARE "http://tizen.org/appcontrol/operation/share"
 
 
 /**
- * @brief Definition for the app_control operation: shares multiple items with someone else.
+ * @brief Definition for the app_control operation: Shares multiple items with someone else.
+ * @details Input: APP_CONTROL_DATA_PATH in Extra is usually used to inform the data to share. In some cases, some other data in Extra can be used (e.g., MULTI_SHARE opeation for sharing Contact data).\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_MULTI_SHARE "http://tizen.org/appcontrol/operation/multi_share"
 
 
 /**
- * @brief Definition for the app_control operation: shares text data with someone else.
+ * @brief Definition for the app_control operation: Shares text data with someone else.
+ * @details Input: APP_CONTROL_DATA_TEXT in Extra is the text to share\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_SHARE_TEXT "http://tizen.org/appcontrol/operation/share_text"
 
 
 /**
- * @brief Definition for the app_control operation: dials a number as specified by the data.
+ * @brief Definition for the app_control operation: Dials a number. This shows a UI with the number to be dialed, allowing the user to explicitly initiate the call.
+ * @details Input: URI is the number to be dialed. If empty, show a UI without number.\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_DIAL "http://tizen.org/appcontrol/operation/dial"
 
 
 /**
- * @brief Definition for the app_control operation: performs a search.
+ * @brief Definition for the app_control operation: Performs a search.
+ * @details Input: APP_CONTROL_DATA_TEXT in Extra is the text to search for. If empty, show a search UI.\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_SEARCH "http://tizen.org/appcontrol/operation/search"
 
 
 /**
- * @brief Definition for the app_control operation: downloads an item.
+ * @brief Definition for the app_control operation: Downloads items.
+ * @details Input: It depends on application scenario/configuration.\n
+ *	    Output: It depends on application scenario/configuration.\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ * @privlevel public
+ * @privilege %http://tizen.org/privilege/download (Since 2.4)
+ * @remarks When you request this operation, you must declare this privilege. (Since 2.4)
  */
 #define APP_CONTROL_OPERATION_DOWNLOAD "http://tizen.org/appcontrol/operation/download"
 
 
 /**
- * @brief Definition for the app_control operation: prints content.
+ * @brief Definition for the app_control operation: Prints contents.
+ * @details Input: It depends on application scenario/configuration.\n
+ *	    Output: It depends on application scenario/configuration.\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_PRINT "http://tizen.org/appcontrol/operation/print"
 
 /**
- * @brief Definition for the app_control operation: composes.
+ * @brief Definition for the app_control operation: Composes a message.
+ * @details Input: It depends on application scenario/configuration.\n
+ *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_OPERATION_COMPOSE "http://tizen.org/appcontrol/operation/compose"
 
 /**
- * @brief Definition for app_control optional data: the subject of a message.
+ * @brief Definition for the app_control operation: Can be launched by interested System-Event.
+ * @details Input : URI and extras data defined in Event module.\n
+ *          Output: Nothing\n
+ * @since_tizen 2.4
+ * @remarks This operation is for handling event from the platform. This operation can not be requested via app_control_send_launch_request().
+ * @remarks Refer to Launch-On-Event section of Event module.
+ */
+#define APP_CONTROL_OPERATION_LAUNCH_ON_EVENT "http://tizen.org/appcontrol/operation/launch_on_event"
+
+/**
+ * @brief Definition for the app_control operation: Adds an item.
+ * @details Input: It depends on application scenario/configuration.\n
+ *          Output: It depends on application scenario/configuration.\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_ADD "http://tizen.org/appcontrol/operation/add"
+
+/**
+ * @brief Definition for the app_control operation: Captures images by camera applications.
+ * @details Input: Nothing\n
+ *	    Output: APP_CONTROL_DATA_SELECTED in Extra\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_IMAGE_CAPTURE "http://tizen.org/appcontrol/operation/image_capture"
+
+/**
+ * @brief Definition for the app_control operation: Captures videos by camera applications.
+ * @details Input: Nothing\n
+ *	    Output: APP_CONTROL_DATA_SELECTED in Extra\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_VIDEO_CAPTURE "http://tizen.org/appcontrol/operation/video_capture"
+
+/**
+ * @brief Definition for the app_control operation: Shows settings to enable Bluetooth.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_SETTING_BT_ENABLE "http://tizen.org/appcontrol/operation/setting/bt_enable"
+
+/**
+ * @brief Definition for the app_control operation: Shows settings to configure Bluetooth visibility.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_SETTING_BT_VISIBILITY "http://tizen.org/appcontrol/operation/setting/bt_visibility"
+
+/**
+ * @brief Definition for the app_control operation: Shows settings to allow configuration of current location sources.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_SETTING_LOCATION "http://tizen.org/appcontrol/operation/setting/location"
+
+/**
+ * @brief Definition for the app_control operation: Shows NFC settings.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_SETTING_NFC "http://tizen.org/appcontrol/operation/setting/nfc"
+
+/**
+ * @brief Definition for the app_control operation: Shows system settings.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_SETTING "http://tizen.org/appcontrol/operation/setting"
+
+/**
+ * @brief Definition for the app_control operation: Shows settings to allow configuration of Wi-Fi.
+ * @details Input: Nothing\n
+ *          Output: Nothing\n
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_OPERATION_SETTING_WIFI "http://tizen.org/appcontrol/operation/setting/wifi"
+
+/**
+ * @brief Definition for app_control data: Subject
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_SUBJECT "http://tizen.org/appcontrol/data/subject"
 
 
 /**
- * @brief Definition for app_control optional data: e-mail addresses.
+ * @brief Definition for app_control data: Recipients
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_TO "http://tizen.org/appcontrol/data/to"
 
 
 /**
- * @brief Definition for app_control optional data: e-mail addresses that should be carbon copied.
+ * @brief Definition for app_control data: E-mail addresses that should be carbon copied
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_CC "http://tizen.org/appcontrol/data/cc"
 
 
 /**
- * @brief Definition for app_control optional data: e-mail addresses that should be blind carbon copied.
+ * @brief Definition for app_control data: E-mail addresses that should be blind carbon copied
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_BCC "http://tizen.org/appcontrol/data/bcc"
 
 
 /**
- * @brief Definition for app_control optional data: the content of the data is associated with #APP_CONTROL_OPERATION_SEND.
+ * @brief Definition for app_control data: Text
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_TEXT "http://tizen.org/appcontrol/data/text"
 
 
 /**
- * @brief Definition for app_control optional data: the title of the data.
+ * @brief Definition for app_control data: Title
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_TITLE "http://tizen.org/appcontrol/data/title"
 
 
 /**
- * @brief Definition for app_control optional data: the path of a selected item.
+ * @brief Definition for app_control data: Selected items
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_SELECTED "http://tizen.org/appcontrol/data/selected"
 
 
 /**
- * @brief Definition for app_control optional data: multiple item path to deliver.
+ * @brief Definition for app_control data: Paths of items
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ * @remarks Since Tizen 2.4, if all added paths with this key are under the caller application's data path which can be obtained by calling app_get_data_path() function, those will be shared to the callee application. Framework will grant a temporary permission to the callee application for those files and revoke it when the callee application is terminated. Paths should be regular files. The callee application can just read them.
  */
 #define APP_CONTROL_DATA_PATH "http://tizen.org/appcontrol/data/path"
 
 
 /**
- * @brief Definition for app_control optional data: the selection type.
+ * @brief Definition for app_control data: Selection mode. ("single" or "multiple")
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
 #define APP_CONTROL_DATA_SELECTION_MODE "http://tizen.org/appcontrol/data/selection_mode"
 
+
+/**
+ * @brief Definition for app_control data: All-day mode of event ("true" or "false")
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_CALENDAR_ALL_DAY "http://tizen.org/appcontrol/data/calendar/all_day"
+
+
+/**
+ * @brief Definition for app_control data: Start time of event (format: YYYY-MM-DD HH:MM:SS)
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_CALENDAR_START_TIME "http://tizen.org/appcontrol/data/calendar/start_time"
+
+
+/**
+ * @brief Definition for app_control data: End time of event (format: YYYY-MM-DD HH:MM:SS)
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_CALENDAR_END_TIME "http://tizen.org/appcontrol/data/calendar/end_time"
+
+
+/**
+ * @brief Definition for app_control data: E-mail addresses
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_EMAIL "http://tizen.org/appcontrol/data/email"
+
+
+/**
+ * @brief Definition for app_control data: Phone numbers
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_PHONE "http://tizen.org/appcontrol/data/phone"
+
+
+/**
+ * @brief Definition for app_control data: URLs
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_URL "http://tizen.org/appcontrol/data/url"
+
+
+/**
+ * @brief Definition for app_control data: IDs
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_ID "http://tizen.org/appcontrol/data/id"
+
+
+/**
+ * @brief Definition for app_control data: Type
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_TYPE "http://tizen.org/appcontrol/data/type"
+
+
+/**
+ * @brief Definition for app_control data: Total count
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_TOTAL_COUNT "http://tizen.org/appcontrol/data/total_count"
+
+
+/**
+ * @brief Definition for app_control data: Total size (unit : bytes)
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_TOTAL_SIZE "http://tizen.org/appcontrol/data/total_size"
+
+/**
+ * @brief Definition for app_control data: Name
+ * @since_tizen 2.4
+ */
+#define APP_CONTROL_DATA_NAME "http://tizen.org/appcontrol/data/name"
 
 /**
  * @brief Called when the reply of the launch request is delivered.
@@ -271,8 +475,12 @@ typedef enum
  * @param[in] result The result code of the launch request
  * @param[in] user_data	The user data passed from the callback registration function
  * @pre When the callee replies to the launch request, this callback will be invoked.
+ * @pre Since 2.4, if #APP_CONTROL_RESULT_APP_STARTED event is enabled,
+ *      this callback also will be invoked when the callee app actually launched.
  * @see app_control_send_launch_request()
  * @see app_control_reply_to_launch_request()
+ * @see app_control_enable_app_started_result_event()
+ * @see #APP_CONTROL_RESULT_APP_STARTED
  */
 typedef void (*app_control_reply_cb) (app_control_h request, app_control_h reply, app_control_result_e result, void *user_data);
 
@@ -344,20 +552,6 @@ int app_control_destroy(app_control_h app_control);
 
 
 /**
- * @internal
- * @brief Converts the app_control handle to bundle data.
- *
- * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
- * @param[in] app_control The app_control handle
- * @param[out] data The bundle data on success
- * @return @c 0 on success,
- *         otherwise a negative error value
- * @retval #APP_CONTROL_ERROR_NONE Successful
- * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
- */
-int app_control_to_bundle(app_control_h app_control, bundle **data);
-
-/**
  * @brief Sets the operation to be performed.
  *
  * @details The @a operation is the mandatory information for the launch request.
@@ -406,6 +600,7 @@ int app_control_get_operation(app_control_h app_control, char **operation);
  * @brief Sets the URI of the data.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ * @remarks Since Tizen 2.4, if the parameter 'uri' is started with 'file://' and it is a regular file in this application's data path which can be obtained by calling app_get_data_path() function, it will be shared to the callee application. Framework will grant a temporary permission to the callee application for this file and revoke it when the callee application is terminated. The callee application can just read it.
  * @param[in] app_control The app_control handle
  * @param[in] uri The URI of the data this app_control is operating on (if the @a uri is @c NULL, it clears the previous value)
  * @return @c 0 on success,
@@ -531,40 +726,6 @@ int app_control_set_app_id(app_control_h app_control, const char *app_id);
 int app_control_get_app_id(app_control_h app_control, char **app_id);
 
 /**
- * @internal
- * @brief Sets the window ID of the application.
- *
- * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
- * @param[in] app_control The app_control handle
- * @param[in] id The window ID of the caller application (if the @a id is not positive, it clears the previous value)
- * @return @c 0 on success,
- *         otherwise a negative error value
- * @retval #APP_CONTROL_ERROR_NONE Successful
- * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #APP_CONTROL_ERROR_OUT_OF_MEMORY Out of memory
- * @see app_control_get_window()
- */
-int app_control_set_window(app_control_h app_control, unsigned int id);
-
-
-/**
- * @internal
- * @brief Gets the window ID of the application.
- *
- * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
- * @param[in] app_control The app_control handle
- * @param[out] id The window ID of the caller application
- * @return @c 0 on success,
- *         otherwise a negative error value
- * @retval #APP_CONTROL_ERROR_NONE Successful
- * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
- * @retval #APP_CONTROL_ERROR_OUT_OF_MEMORY Out of memory
- * @see app_control_set_app_id()
-*/
-int app_control_get_window(app_control_h app_control, unsigned int *id);
-
-
-/**
  * @brief Adds extra data to the app_control.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
@@ -620,6 +781,7 @@ int app_control_add_extra_data_array(app_control_h app_control, const char *key,
  * @retval #APP_CONTROL_ERROR_NONE Successful
  * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #APP_CONTROL_ERROR_KEY_NOT_FOUND Specified key not found
+ * @retval #APP_CONTROL_ERROR_KEY_REJECTED Key not available
  * @see app_control_add_extra_data()
  * @see app_control_add_extra_data_array()
  * @see app_control_get_extra_data()
@@ -643,6 +805,7 @@ int app_control_remove_extra_data(app_control_h app_control, const char *key);
  * @retval #APP_CONTROL_ERROR_KEY_NOT_FOUND Specified key not found
  * @retval #APP_CONTROL_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #APP_CONTROL_ERROR_INVALID_DATA_TYPE Invalid data type
+ * @retval #APP_CONTROL_ERROR_KEY_REJECTED Key not available
  * @see app_control_add_extra_data()
  * @see app_control_add_extra_data_array()
  * @see app_control_get_extra_data()
@@ -669,6 +832,7 @@ int app_control_get_extra_data(app_control_h app_control, const char *key, char 
  * @retval #APP_CONTROL_ERROR_KEY_NOT_FOUND Specified key not found
  * @retval #APP_CONTROL_ERROR_OUT_OF_MEMORY Out of memory
  * @retval #APP_CONTROL_ERROR_INVALID_DATA_TYPE Invalid data type
+ * @retval #APP_CONTROL_ERROR_KEY_REJECTED Key not available
  * @see app_control_add_extra_data()
  * @see app_control_add_extra_data_array()
  * @see app_control_remove_extra_data()
@@ -739,10 +903,11 @@ int app_control_foreach_app_matched(app_control_h app_control, app_control_app_m
  * @details The operation is mandatory information for the launch request. \n
  *          If the operation is not specified, #APP_CONTROL_OPERATION_DEFAULT is used by default.
  *          If the operation is #APP_CONTROL_OPERATION_DEFAULT, the application ID is mandatory to explicitly launch the application.
- * @remarks In some implementations of the Tizen platform, service applications are only allowed to be launched explicitly by the application in the same package; hence you should not use this function to launch the service application that is not in the your application package.
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  * @privlevel	public
  * @privilege	%http://tizen.org/privilege/appmanager.launch
+ * @remarks The function returns #APP_CONTROL_ERROR_LAUNCH_REJECTED if the operation value is #APP_CONTROL_OPERATION_LAUNCH_ON_EVENT which is only for handling the event from the platform or other application, refer to @a Event module.
+ * @remarks Since Tizen 2.4, the launch request of the service application over out of packages is restricted by the platform. Also, implicit launch requests are NOT delivered to service applications since 2.4. To launch a service application, an explicit launch request with application ID given by app_control_set_app_id() MUST be sent.
  * @param[in] app_control The app_control handle
  * @param[in] callback The callback function to be called when the reply is delivered
  * @param[in] user_data The user data to be passed to the callback function
@@ -756,15 +921,19 @@ int app_control_foreach_app_matched(app_control_h app_control, app_control_app_m
  * @retval #APP_CONTROL_ERROR_LAUNCH_FAILED Failed to launch the application
  * @retval #APP_CONTROL_ERROR_TIMED_OUT Failed due to timeout. The application that handles @a app_control may be busy
  * @retval #APP_CONTROL_ERROR_PERMISSION_DENIED Permission denied
- * @post If the launch request is sent for the result, the result will come back through app_control_reply_cb() from the callee application.
+ * @post If the launch request is sent for the result, the result will come back through app_control_reply_cb() from the callee application. Additional replies may be delivered on app_control_enable_app_started_result_event() called.
  * @see app_control_reply_to_launch_request()
  * @see app_control_reply_cb()
+ * @see app_control_enable_app_started_result_event()
  */
 int app_control_send_launch_request(app_control_h app_control, app_control_reply_cb callback, void *user_data);
 
 
 /**
  * @brief Sends the terminate request to the application that is launched by app_control. This API is only effective for some applications that are provided by default for handling platform default app_controls. You are not allowed to terminate other general applications using this API.
+ *
+ * @remarks Since Tizen 2.4, this API can be used to terminate sub-applications which were launched as group mode by caller application.
+ *          Once callee application is being terminated by this API, other applications which were launched by callee application as group mode will be terminated as well.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  * @param[in] app_control The app_control handle
@@ -774,6 +943,7 @@ int app_control_send_launch_request(app_control_h app_control, app_control_reply
  * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
  * @retval #APP_CONTROL_ERROR_PERMISSION_DENIED Permission denied
  * @see app_control_send_launch_request()
+ * @see app_control_set_launch_mode()
  */
 int app_control_send_terminate_request(app_control_h app_control);
 
@@ -783,6 +953,7 @@ int app_control_send_terminate_request(app_control_h app_control);
  * @details If the caller application sent the launch request to receive the result, the callee application can return the result back to the caller.
  *
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
+ * @remarks The function is not allowed to send reply #APP_CONTROL_RESULT_APP_STARTED as @a result which is reserved for platform developers.
  * @param[in] reply The app_control handle in which the results of the callee are contained
  * @param[in] request The app_control handle sent by the caller
  * @param[in] result  The result code of the launch request
@@ -832,6 +1003,8 @@ int app_control_clone(app_control_h *clone, app_control_h app_control);
 int app_control_get_caller(app_control_h app_control, char **id);
 
 
+
+
 /**
  * @brief Checks whether the caller is requesting a reply from the launch request.
  *
@@ -850,22 +1023,57 @@ int app_control_get_caller(app_control_h app_control, char **id);
 int app_control_is_reply_requested(app_control_h app_control, bool *requested);
 
 /**
- * @internal
- * @brief Requests the specified callee window to be transient for the caller window.
+ * @brief Sets the launch mode of the application.
  *
- * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
- * @remarks The @a callee_id window is transient for the top-level caller window and should be handled accordingly.
+ * @details This function allows callee application to be launched as group or single mode.
+ * @remarks Although launch_mode were set as #APP_CONTROL_LAUNCH_MODE_GROUP, callee application would be launched as single mode if the manifest file of callee application defined the launch mode as "single".
+ *          This function can just set the preference of caller application to launch an application.
+ * @remarks Sub-applications which were launched as group mode always have own process.
+ *
+ * @since_tizen 2.4
  * @param[in] app_control The app_control handle
- * @param[in] callee_id The callee window ID
- * @param[in] cbfunc The callback function to be called when the transient is requested
- * @param[in] data A data pointer to pass to the callback function
- * @return @c 0 on success,
- *         otherwise a negative error value.
+ * @param[in] launch_mode The launch mode of app
+ *
+ * @return 0 on success, otherwise a negative error value
  * @retval #APP_CONTROL_ERROR_NONE Successful
  * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
+ * @see app_control_set_launch_mode()
+ * @see app_control_launch_mode_e
  */
-int app_control_request_transient_app(app_control_h app_control, unsigned int callee_id, app_control_host_res_fn cbfunc, void *data);
+int app_control_set_launch_mode(app_control_h app_control,
+		app_control_launch_mode_e mode);
 
+/**
+ * @brief Gets the launch mode of the application.
+ *
+ * @since_tizen 2.4
+ * @param[in] app_control The app_control handle
+ * @param[out] launch_mode The launch mode of app
+ *
+ * @return 0 on success, otherwise a negative error value
+ * @retval #APP_CONTROL_ERROR_NONE Successful
+ * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
+ * @see	app_control_get_launch_mode()
+ * @see app_control_launch_mode_e
+ */
+int app_control_get_launch_mode(app_control_h app_control,
+		app_control_launch_mode_e *mode);
+
+/**
+ * @brief Enables additional launch result event on launch request.
+ *
+ * @details The function allows to receive #APP_CONTROL_RESULT_APP_STARTED event on\n
+ *         application get launched by app_control.
+ * @remarks app_control_reply_cb() will be called on APP_CONTROL_RESULT_APP_STARTED event received.
+ * @since_tizen 2.4
+ * @param[in] app_control The app_control handle
+ * @return 0 on success, otherwise a negative error value
+ * @retval #APP_CONTROL_ERROR_NONE Successful
+ * @retval #APP_CONTROL_ERROR_INVALID_PARAMETER Invalid parameter
+ * @see app_control_send_launch_request()
+ * @see #APP_CONTROL_RESULT_APP_STARTED
+ */
+int app_control_enable_app_started_result_event(app_control_h app_control);
 /**
  * @}
  */

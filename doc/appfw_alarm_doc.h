@@ -33,7 +33,7 @@
  * block your main UI thread.  Use of alarms helps build smooth user experiences and implements unattended data synchronization tasks.
  * If an application is installed after setting the alarm, your alarm is cancelled automatically.\n
  * When the alarm is expired, Alarm Manager will turn on LCD to prohibit background jobs.
- * Please make sure background jobs using alarm APIs are not allowed.
+ * If you want to use alarm API without turning on LCD, you can use alarm_schedule_after_delay().
  *
  * There are 3 ways to set an alarm.
  * <table>
@@ -49,9 +49,13 @@
  * 	<td>alarm_schedule_once_at_date()</td>
  * 	<td>Sets an alarm to be triggered after specific delay once</td>
  * </tr>
-  * <tr>
+ * <tr>
  * 	<td>alarm_schedule_with_recurrence_week_flag()</td>
  * 	<td>Sets an alarm to be triggered at specific time with recurrent days of the week(can repeat on days of the week)</td>
+ * </tr>
+ * <tr>
+ * 	<td>alarm_schedule_after_delay()</td>
+ * 	<td>Sets an alarm to be triggered after specific time(Since 2.4, this api does not support exact period and delay for minimizing the wakeups of the device. The system can adjust when the alarm expires.)</td>
  * </tr>
  * </table>
  * \n

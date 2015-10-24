@@ -15,13 +15,15 @@
  */
 
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <errno.h>
 
 #include <bundle.h>
+#include <bundle_internal.h>
 #include <aul.h>
+#include <aul_svc.h>
 #include <appsvc.h>
 #include <dlog.h>
 
@@ -29,6 +31,7 @@
 #include <pkgmgr-info.h>
 
 #include <privilege_checker.h>
+#include <eventsystem.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -50,6 +53,12 @@
 #define BUNDLE_KEY_PACKAGE	"__APP_SVC_PKG_NAME__"
 #define BUNDLE_KEY_WINDOW	"__APP_SVC_K_WIN_ID__"
 #define BUNDLE_KEY_CATEGORY	"__APP_SVC_CATEGORY__"
+#define BUNDLE_KEY_EVENTNAME	"__APP_SVC_EVENTNAME_TYPE__"
+#define BUNDLE_KEY_EVENTDATA	"__APP_SVC_EVENTDATA_TYPE__"
+
+#define LAUNCH_MODE_SIZE 8
+#define LAUNCH_MODE_SINGLE "single"
+#define LAUNCH_MODE_GROUP "group"
 
 typedef enum {
 	APP_CONTROL_TYPE_REQUEST,
@@ -72,7 +81,7 @@ typedef struct app_control_request_context_s {
 
 extern int appsvc_allow_transient_app(bundle *b, unsigned int id);
 extern int appsvc_request_transient_app(bundle *b, unsigned int callee_id, appsvc_host_res_fn cbfunc, void *data);
-
+extern int aul_invoke_caller_cb(int launch_pid);
 static int app_control_create_reply(bundle *data, struct app_control_s **app_control);
 
 static const char* app_control_error_to_string(app_control_error_e error)
@@ -111,6 +120,9 @@ static const char* app_control_error_to_string(app_control_error_e error)
 
 	case APP_CONTROL_ERROR_TIMED_OUT:
 		return "TIMED_OUT";
+
+	case APP_CONTROL_ERROR_IO_ERROR:
+		return "IO ERROR";
 
 	default :
 		return "UNKNOWN";
@@ -352,7 +364,8 @@ int app_control_destroy(app_control_h app_control)
 		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, NULL);
 	}
 
-	if(app_control->type == APP_CONTROL_TYPE_REQUEST && app_control->launch_pid > 0)
+	if(app_control->type == APP_CONTROL_TYPE_REQUEST && app_control->launch_pid > 0 &&
+		bundle_get_val(app_control->data, AUL_SVC_K_LAUNCH_RESULT_APP_STARTED) == NULL)
 	{
 		aul_remove_caller_cb(app_control->launch_pid);
 	}
@@ -692,7 +705,62 @@ int app_control_clone(app_control_h *clone, app_control_h app_control)
 	return APP_CONTROL_ERROR_NONE;
 }
 
-static void update_launch_pid(int launched_pid, void *data)
+int app_control_set_launch_mode(app_control_h app_control,
+		app_control_launch_mode_e mode)
+{
+	char launch_mode[LAUNCH_MODE_SIZE] = { 0, };
+
+	if (app_control_validate(app_control)) {
+		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER,
+				__FUNCTION__, NULL);
+	}
+
+	switch (mode) {
+	case APP_CONTROL_LAUNCH_MODE_SINGLE:
+		strncpy(launch_mode, LAUNCH_MODE_SINGLE, strlen(LAUNCH_MODE_SINGLE));
+		break;
+	case APP_CONTROL_LAUNCH_MODE_GROUP:
+		strncpy(launch_mode, LAUNCH_MODE_GROUP, strlen(LAUNCH_MODE_GROUP));
+		break;
+	default:
+		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER,
+				__FUNCTION__, "invalid mode");
+	}
+
+	return appsvc_set_launch_mode(app_control->data, launch_mode);
+}
+
+int app_control_get_launch_mode(app_control_h app_control,
+		app_control_launch_mode_e *mode)
+{
+	const char *launch_mode;
+
+	if (app_control_validate(app_control)) {
+		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER,
+				__FUNCTION__, NULL);
+	}
+
+	launch_mode = appsvc_get_launch_mode(app_control->data);
+	if (launch_mode == NULL) {
+		*mode = APP_CONTROL_LAUNCH_MODE_SINGLE;
+		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER,
+				__FUNCTION__, "fail to get launch_mode");
+	} else {
+		if (!strcmp(launch_mode, LAUNCH_MODE_SINGLE)) {
+			*mode = APP_CONTROL_LAUNCH_MODE_SINGLE;
+		} else if (!strcmp(launch_mode, LAUNCH_MODE_GROUP)) {
+			*mode = APP_CONTROL_LAUNCH_MODE_GROUP;
+		} else {
+			*mode = APP_CONTROL_LAUNCH_MODE_SINGLE;
+			return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER,
+					__FUNCTION__, "launch_mode is not matched");
+		}
+	}
+
+	return APP_CONTROL_ERROR_NONE;
+}
+
+static void __update_launch_pid(int launched_pid, void *data)
 {
 	app_control_h app_control;
 
@@ -702,6 +770,53 @@ static void update_launch_pid(int launched_pid, void *data)
 	app_control = data;
 
 	app_control->launch_pid = launched_pid;
+}
+
+static void __handle_launch_result(int launched_pid, void *data)
+{
+	app_control_request_context_h request_context;
+	app_control_h reply = NULL;
+	app_control_h request;
+	app_control_result_e result;
+	app_control_reply_cb reply_cb;
+	void *user_data;
+	char callee[255] = {0, };
+	int ret = 0;
+
+	if (data == NULL)
+		return;
+
+	request_context = (app_control_request_context_h)data;
+
+	if (app_control_create_event(request_context->app_control->data, &reply) != 0)
+	{
+		app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, "failed to create app_control event");
+		return;
+	}
+
+	ret = aul_app_get_appid_bypid(launched_pid, callee, sizeof(callee));
+	if (ret < 0) {
+		LOGE("aul_app_get_appid_bypid failed: %d", launched_pid);
+	}
+
+	app_control_set_app_id(reply, callee);
+	LOGI("app control async result callback callee pid:%d", launched_pid);
+
+	result = APP_CONTROL_RESULT_APP_STARTED;
+	request = request_context->app_control;
+	user_data = request_context->user_data;
+	reply_cb = request_context->reply_cb;
+
+	if (reply_cb != NULL)
+	{
+		reply_cb(request, reply, result, user_data);
+	}
+	else
+	{
+		app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, "invalid callback ");
+	}
+
+	app_control_destroy(reply);
 }
 
 int app_control_send_launch_request(app_control_h app_control, app_control_reply_cb callback, void *user_data)
@@ -725,38 +840,21 @@ int app_control_send_launch_request(app_control_h app_control, app_control_reply
 		operation = APP_CONTROL_OPERATION_DEFAULT;
 	}
 
+	if (!strcmp(operation, APP_CONTROL_OPERATION_LAUNCH_ON_EVENT))
+	{
+		return app_control_error(APP_CONTROL_ERROR_LAUNCH_REJECTED, __FUNCTION__,
+			"Not supported operation value");
+	}
+
 	// Check the privilege for call operation
 	if (!strcmp(operation, APP_CONTROL_OPERATION_CALL))
 	{
 		int ret;
-		char app_id[256];
-		char *pkg_id;
-		pkgmgrinfo_appinfo_h app_info;
 
-		ret = aul_app_get_appid_bypid(getpid(), app_id, sizeof(app_id));
-		if (ret != AUL_R_OK)
+		ret = privilege_checker_check_privilege("http://tizen.org/privilege/call");
+		if (ret != PRIVILEGE_CHECKER_ERR_NONE)
 		{
-			return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, "Failed to get the app_id of the current application");
-		}
-
-		ret = pkgmgrinfo_appinfo_get_appinfo(app_id, &app_info);
-		if (ret != PMINFO_R_OK)
-		{
-			return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, "Failed to get app_info of the current application");
-		}
-
-		ret = pkgmgrinfo_appinfo_get_pkgname(app_info, &pkg_id);
-		if (ret != PMINFO_R_OK)
-		{
-			pkgmgrinfo_appinfo_destroy_appinfo(app_info);
-			return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, "Failed to get pkg_id of the current application");
-		}
-
-		ret = privilege_checker_check_package_privilege(pkg_id, "http://tizen.org/privilege/call");
-		pkgmgrinfo_appinfo_destroy_appinfo(app_info);
-		if (ret != PRIV_CHECKER_ERR_NONE)
-		{
-			if (ret == PRIV_CHECKER_ERR_INVALID_PRIVILEGE)
+			if (ret == PRIVILEGE_CHECKER_ERR_UNDECLARED_PRIVILEGE)
 			{
 				return app_control_error(APP_CONTROL_ERROR_PERMISSION_DENIED, __FUNCTION__, "no privilege for Call operation");
 			}
@@ -833,8 +931,24 @@ int app_control_send_launch_request(app_control_h app_control, app_control_reply
 	}
 
 	app_control->launch_pid = launch_pid;
+	// app_control_enable_app_started_result_event called
+	if (bundle_get_val(app_control->data, AUL_SVC_K_LAUNCH_RESULT_APP_STARTED)) {
+		char callee[255] = {0,};
+		if (aul_app_get_appid_bypid(launch_pid, callee, sizeof(callee)) != AUL_R_OK)
+			LOGE("aul_app_get_appid_bypid failed: %d", launch_pid);
 
-	aul_add_caller_cb(launch_pid,  update_launch_pid, app_control);
+		if (request_context && request_context->app_control)
+			request_context->app_control->launch_pid = launch_pid;
+
+		aul_add_caller_cb(launch_pid, __handle_launch_result, request_context);
+
+		// launched without app selector
+		if (strncmp(callee, APP_SELECTOR, strlen(APP_SELECTOR)) != 0)
+			aul_invoke_caller_cb(launch_pid);
+
+	} else { // default case
+		aul_add_caller_cb(launch_pid, __update_launch_pid, app_control);
+	}
 
 	return APP_CONTROL_ERROR_NONE;
 }
@@ -904,6 +1018,11 @@ int app_control_reply_to_launch_request(app_control_h reply, app_control_h reque
 		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, NULL);
 	}
 
+	if (result == APP_CONTROL_RESULT_APP_STARTED)
+	{
+		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, "APP_CONTROL_RESULT_APP_STARTED is not allowed to use");
+	}
+
 	if (appsvc_create_result_bundle(request->data, &reply_data) != 0)
 	{
 		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, "failed to create a result bundle");
@@ -931,6 +1050,8 @@ int app_control_reply_to_launch_request(app_control_h reply, app_control_h reque
 	}
 
 	ret = appsvc_send_result(reply_data, appsvc_result);
+	bundle_free(reply_data);
+
 	if (ret < 0)
 	{
 		if (ret == APPSVC_RET_EINVAL)
@@ -1046,7 +1167,7 @@ int app_control_get_extra_data(app_control_h app_control, const char *key, char 
 
 	if (data_value == NULL)
 	{
-		if (errno == ENOTSUP)
+		if (get_last_result() == BUNDLE_ERROR_INVALID_PARAMETER)
 		{
 			return app_control_error(APP_CONTROL_ERROR_INVALID_DATA_TYPE, __FUNCTION__, NULL);
 		}
@@ -1088,7 +1209,7 @@ int app_control_get_extra_data_array(app_control_h app_control, const char *key,
 
 	if (array_data == NULL)
 	{
-		if (errno == ENOTSUP)
+		if (get_last_result() == BUNDLE_ERROR_INVALID_PARAMETER)
 		{
 			return app_control_error(APP_CONTROL_ERROR_INVALID_DATA_TYPE, __FUNCTION__, NULL);
 		}
@@ -1375,7 +1496,6 @@ int app_control_export_as_bundle(app_control_h app_control, bundle **data)
 	return APP_CONTROL_ERROR_NONE;
 }
 
-
 int app_control_request_transient_app(app_control_h app_control, unsigned int callee_id, app_control_host_res_fn cbfunc, void *data)
 {
 	int ret;
@@ -1395,3 +1515,21 @@ int app_control_request_transient_app(app_control_h app_control, unsigned int ca
 	return APP_CONTROL_ERROR_NONE;
 }
 
+int app_control_enable_app_started_result_event(app_control_h app_control)
+{
+	int ret;
+
+	if (app_control_validate(app_control))
+	{
+		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, NULL);
+	}
+
+	ret = aul_svc_subscribe_launch_result(app_control->data, AUL_SVC_K_LAUNCH_RESULT_APP_STARTED);
+
+	if (ret < 0)
+	{
+		return app_control_error(APP_CONTROL_ERROR_INVALID_PARAMETER, __FUNCTION__, NULL);
+	}
+
+	return APP_CONTROL_ERROR_NONE;
+}

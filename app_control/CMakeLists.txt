@@ -9,7 +9,7 @@ SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 SET(INC_DIR ${CMAKE_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${INC_DIR})
 
-SET(requires "dlog bundle aul appsvc capi-base-common capi-security-privilege-manager pkgmgr-info")
+SET(requires "dlog bundle aul appsvc capi-base-common security-privilege-checker pkgmgr-info eventsystem")
 SET(pc_requires "capi-base-common")
 
 INCLUDE(FindPkgConfig)

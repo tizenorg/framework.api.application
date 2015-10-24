@@ -70,3 +70,10 @@ char *app_get_external_shared_data_path(void)
 	const char *buf = aul_get_app_external_shared_data_path();
 	return buf != NULL ? strdup(buf) : NULL;
 }
+
+char *app_get_tep_resource_path(void)
+{
+	const char *buf = aul_get_app_tep_resource_path();
+	return buf != NULL ? strdup(buf) : NULL;
+}
+

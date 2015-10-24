@@ -35,10 +35,6 @@ static void utc_app_get_id_negative1(void);
 static void utc_app_get_id_negative2(void);
 static void utc_app_get_version_negative1(void);
 static void utc_app_get_version_negative2(void);
-static void utc_app_get_resource_negative1(void);
-static void utc_app_get_resource_negative2(void);
-static void utc_app_get_data_directory_negative1(void);
-static void utc_app_get_data_directory_negative2(void);
 static void utc_app_get_device_orientation_positive(void);
 static void utc_app_set_reclaiming_system_cache_on_pause_positive1(void);
 static void utc_app_set_reclaiming_system_cache_on_pause_positive2(void);
@@ -55,10 +51,6 @@ struct tet_testlist tet_testlist[] = {
 	{ utc_app_get_id_negative2, 1 },
 	{ utc_app_get_version_negative1, 1 },
 	{ utc_app_get_version_negative2, 1 },
-	{ utc_app_get_resource_negative1, 1 },
-	{ utc_app_get_resource_negative2, 1 },
-	{ utc_app_get_data_directory_negative1, 1 },
-	{ utc_app_get_data_directory_negative2, 1 },
 	{ utc_app_get_device_orientation_positive, 1 },
 	{ utc_app_set_reclaiming_system_cache_on_pause_positive1, 1 },
 	{ utc_app_set_reclaiming_system_cache_on_pause_positive2, 1 },
@@ -191,92 +183,6 @@ static void utc_app_get_version_negative2(void)
 	dts_message(API_NAME, "ret(%d)", ret);
 
 	if(ret == APP_ERROR_NONE)
-	{
-		dts_fail(API_NAME, "failed");
-	}
-	else
-	{
-		dts_pass(API_NAME, "passed");
-	}
-}
-
-
-static void utc_app_get_resource_negative1(void)
-{
-	const char *API_NAME = __FUNCTION__;
-	char *ret = NULL;
-	char *path = NULL;
-	int size = 0;
-
-	ret = app_get_resource("res/image.jpg", path, size);
-
-	dts_message(API_NAME, "ret(%s), path(%s)", ret, path);
-
-	if(path != NULL)
-	{
-		dts_fail(API_NAME, "failed");
-	}
-	else
-	{
-		dts_pass(API_NAME, "passed");
-	}
-}
-
-
-static void utc_app_get_resource_negative2(void)
-{
-	const char *API_NAME = __FUNCTION__;
-	char *ret = NULL;
-	int size = 0;
-
-	ret = app_get_resource("res/image.jpg", NULL, size);
-
-	dts_message(API_NAME, "ret(%s)", ret);
-
-	if(ret != NULL)
-	{
-		dts_fail(API_NAME, "failed");
-	}
-	else
-	{
-		dts_pass(API_NAME, "passed");
-	}
-}
-
-
-static void utc_app_get_data_directory_negative1(void)
-{
-	const char *API_NAME = __FUNCTION__;
-	char *ret = NULL;
-	char *path = NULL;
-	int size =0;
-
-	ret = app_get_data_directory(path, size);
-
-	dts_message(API_NAME, "ret(%s), path(%s)", ret, path);
-
-	if(ret != NULL)
-	{
-		dts_fail(API_NAME, "failed");
-	}
-	else
-	{
-		dts_pass(API_NAME, "passed");
-	}
-}
-
-
-static void utc_app_get_data_directory_negative2(void)
-{
-	const char *API_NAME = __FUNCTION__;
-	char *ret = NULL;
-	int size = 0;
-
-	ret = app_get_data_directory(NULL, size);
-
-	dts_message(API_NAME, "ret(%s)", ret);
-
-	if(ret != NULL)
 	{
 		dts_fail(API_NAME, "failed");
 	}

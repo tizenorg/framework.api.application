@@ -27,7 +27,8 @@
  *   \#include <app_control.h>
  *
  * @section CAPI_APP_CONTROLMODULE_OVERVIEW Overview
- * <a href="../org.tizen.mobile.native.appprogramming/html/guide/app/platform_appcontrol.htm">Platform Application Controls</a>
+ * <a href="https://developer.tizen.org/development/guides/native-application/application-framework/application#platform_appcontrol">Platform Application Controls</a>
+ *
  */
 
 #endif /* __TIZEN_APPFW_APP_CONTROL_DOC_H__ */

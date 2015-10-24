@@ -142,6 +142,12 @@
 *  Region change means a different time zone; the application UI may need to update the time to reflect the time zone change.
 * </td>
 * </tr>
+* <tr>
+*  <td> APP_EVENT_SUSPENDED_STATE_CHANGED </td>
+*  <td> The suspended state is changed.
+*   The application will enter to the suspended state, or exited from the state. Do the necessary action before or after the suspended; the application shall not respond to requests of the other modules.
+*  </td>
+* </tr>
 * </table>
 *
 * @subsection CAPI_APPLICATION_MODULE_STATES_TRANSITIONS The Application States and Transitions
@@ -154,6 +160,9 @@
 * - A system event occurs and it causes a resident application with higher priority (e.g. a phone call is received) to become active, and hides
 *   your application temporarily
 * - An alarm went off for another application so it now becomes the top-most window and hides your application
+*
+* Since Tizen 2.4, the application on the background goes in to a suspended state. In the suspended state, the application process is executed with limited CPU resources. In other words, the platform does
+* not allow the running of the background applications.
 *
 *  When your application becomes visible again, the app_resume_cb() callback is invoked. Some possible scenarios for your application to become visible are:
 * - Another application requests your application to run (perhaps the Task Navigator which shows all running applications and lets

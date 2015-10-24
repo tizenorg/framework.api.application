@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-SET(fw_name "capi-appfw-app-common")
+SET(fw_name "capi-appfw-event")
 
 PROJECT(${fw_name})
 
@@ -9,7 +9,7 @@ SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 SET(INC_DIR ${CMAKE_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${INC_DIR})
 
-SET(requires "dlog aul capi-base-common")
+SET(requires "glib-2.0 dlog bundle eventsystem capi-base-common")
 SET(pc_requires "capi-base-common")
 
 INCLUDE(FindPkgConfig)
@@ -31,11 +31,7 @@ ADD_DEFINITIONS("-DSLP_DEBUG")
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--rpath=/usr/lib")
 
 add_library(${fw_name} SHARED
-		app_package.c
-		app_path.c
-		app_error.c
-		app_finalizer.c
-		app_event.c
+		event.c
 		)
 
 TARGET_LINK_LIBRARIES(${fw_name} ${${fw_name}_LDFLAGS})

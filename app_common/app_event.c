@@ -153,3 +153,18 @@ int app_event_get_device_orientation(app_event_info_h event_info, app_device_ori
 	return APP_ERROR_NONE;
 }
 
+int app_event_get_suspended_state(app_event_info_h event_info, app_suspended_state_e *state)
+{
+	if (event_info == NULL || state == NULL)
+		return app_error(APP_ERROR_INVALID_PARAMETER, __FUNCTION__, "null parameter");
+
+	if (event_info->type != APP_EVENT_SUSPENDED_STATE_CHANGED)
+		return app_error(APP_ERROR_INVALID_CONTEXT, __FUNCTION__, "event type mismatching");
+
+	if (*(enum appcore_suspended_state *)(event_info->value) == APPCORE_SUSPENDED_STATE_WILL_ENTER_SUSPEND)
+		*state = APP_SUSPENDED_STATE_WILL_ENTER;
+	else if (*(enum appcore_suspended_state *)(event_info->value) == APPCORE_SUSPENDED_STATE_DID_EXIT_FROM_SUSPEND)
+		*state = APP_SUSPENDED_STATE_DID_EXIT;
+
+	return APP_ERROR_NONE;
+}

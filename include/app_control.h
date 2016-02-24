@@ -116,7 +116,8 @@ typedef enum {
 
 /**
  * @brief Definition for the app_control operation: Displays the data.
- * @details Input: URI is usually used to inform the path to show. In some cases, some other data in Extra can be used (e.g., VIEW operation for viewing Contact, Calendar data).\n
+ * @details Input: URI is usually used to inform the path to show. In some cases, some other data in Extra can be used.\n
+ *		   Ex) Contact, Calendar view operation\n
  *	    Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
@@ -171,7 +172,8 @@ typedef enum {
 
 /**
  * @brief Definition for the app_control operation: Shares an item with someone else.
- * @details Input: URI is usually used to inform the path to share. In some cases, some other data in Extra can be used (e.g., SHARE operation for sharing Contact data, SHARE operation for sharing an item through Message, Email applications).\n
+ * @details Input: URI is usually used to inform the path to share. In some cases, some other data in Extra can be used.\n
+ *		   Ex) Message, Email share operation\n
  *	    Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
@@ -180,7 +182,7 @@ typedef enum {
 
 /**
  * @brief Definition for the app_control operation: Shares multiple items with someone else.
- * @details Input: APP_CONTROL_DATA_PATH in Extra is usually used to inform the data to share. In some cases, some other data in Extra can be used (e.g., MULTI_SHARE opeation for sharing Contact data).\n
+ * @details Input: APP_CONTROL_DATA_PATH in Extra is the data to share.\n
  *          Output: Nothing\n
  * @since_tizen @if MOBILE 2.3 @elseif WEARABLE 2.3.1 @endif
  */
